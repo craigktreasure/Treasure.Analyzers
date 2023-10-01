@@ -34,6 +34,11 @@
 
     <!-- Normalize file paths on CI builds. -->
     <ContinuousIntegrationBuild>$(IsCIBuild)</ContinuousIntegrationBuild>
+
+    <!-- Configure project naming. -->
+    <ProjectPrefix>Treasure.Analyzers</ProjectPrefix>
+    <RootNamespace>$(ProjectPrefix).$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>$(ProjectPrefix).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
