@@ -1,3 +1,5 @@
+__*
+
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,visualstudio,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,visualstudio,visualstudiocode
 
@@ -8,7 +10,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -51,6 +54,12 @@ Temporary Items
 # Ignore all local history of files
 .history
 .ionide
+
+# Support for Project snippet scope
+.vscode/*.code-snippets
+
+# Ignore code-workspaces
+*.code-workspace
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -163,6 +172,7 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
+!Directory.Build.rsp
 *.sbr
 *.tlb
 *.tli
@@ -456,7 +466,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
-*.code-workspace
 
 # Local History for Visual Studio Code
 
