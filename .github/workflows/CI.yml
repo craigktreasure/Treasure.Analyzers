@@ -49,7 +49,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --% /p:ExcludeByAttribute=\"GeneratedCodeAttribute,CompilerGeneratedAttribute\"
+        run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true
         shell: pwsh
 
       - name: Upload coverage to Codecov
