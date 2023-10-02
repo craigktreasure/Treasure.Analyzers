@@ -58,9 +58,9 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
 
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: CodeFixResources.CodeFixTitle,
+                    title: CodeFixResources.Treasure0001CodeFixTitle,
                     createChangedDocument: c => ReorderMembersAsync(context.Document, classDeclaration, c),
-                    equivalenceKey: nameof(CodeFixResources.CodeFixTitle)),
+                    equivalenceKey: nameof(CodeFixResources.Treasure0001CodeFixTitle)),
                 diagnostic);
         }
     }

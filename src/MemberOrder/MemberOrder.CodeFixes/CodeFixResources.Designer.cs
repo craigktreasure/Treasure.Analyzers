@@ -63,9 +63,9 @@ namespace Treasure.Analyzers.MemberOrder.CodeFixes {
         /// <summary>
         ///   Looks up a localized string similar to Reorder members.
         /// </summary>
-        internal static string CodeFixTitle {
+        internal static string Treasure0001CodeFixTitle {
             get {
-                return ResourceManager.GetString("CodeFixTitle", resourceCulture);
+                return ResourceManager.GetString("Treasure0001CodeFixTitle", resourceCulture);
             }
         }
     }

@@ -61,29 +61,29 @@ namespace Treasure.Analyzers.MemberOrder {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Members in a type should be ordered by type, accessibility level, and name..
+        ///   Looks up a localized string similar to Members in a type should be ordered by type, keyword, accessibility level, and name..
         /// </summary>
-        internal static string TA0001AnalyzerDescription {
+        internal static string Treasure0001AnalyzerDescription {
             get {
-                return ResourceManager.GetString("TA0001AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("Treasure0001AnalyzerDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Members of the &apos;{0}&apos; type should be ordered by type, accessibility level, and name.
+        ///   Looks up a localized string similar to Members of the &apos;{0}&apos; type should be ordered by type, keyword, accessibility level, and name.
         /// </summary>
-        internal static string TA0001AnalyzerMessageFormat {
+        internal static string Treasure0001AnalyzerMessageFormat {
             get {
-                return ResourceManager.GetString("TA0001AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("Treasure0001AnalyzerMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Members should be ordered by type, accessibility level, and name.
+        ///   Looks up a localized string similar to Members should be ordered by type, keyword, accessibility level, and name.
         /// </summary>
-        internal static string TA0001AnalyzerTitle {
+        internal static string Treasure0001AnalyzerTitle {
             get {
-                return ResourceManager.GetString("TA0001AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("Treasure0001AnalyzerTitle", resourceCulture);
             }
         }
     }

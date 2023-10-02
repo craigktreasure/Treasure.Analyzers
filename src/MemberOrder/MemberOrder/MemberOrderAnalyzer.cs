@@ -19,17 +19,17 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// <summary>
     /// The diagnostic identifier.
     /// </summary>
-    public const string DiagnosticId = "TA0001";
+    public const string DiagnosticId = "Treasure0001";
 
     private const string Category = "Ordering";
 
-    private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.TA0001AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.Treasure0001AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
 
-    private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.TA0001AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.Treasure0001AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
 
     // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
     // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Localizing%20Analyzers.md for more on localization
-    private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.TA0001AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
+    private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.Treasure0001AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
 
     private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 

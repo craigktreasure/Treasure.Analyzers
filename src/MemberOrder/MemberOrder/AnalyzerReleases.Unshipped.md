@@ -5,4 +5,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-TA0001  | Ordering |  Warning | TA0001_MemberOrder
+Treasure0001 | Ordering | Warning | Treasure0001_MemberOrder
