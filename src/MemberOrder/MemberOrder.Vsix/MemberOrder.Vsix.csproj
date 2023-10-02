@@ -45,4 +45,6 @@
     <ProjectReference Update="@(ProjectReference)" Name="%(Filename)" />
   </ItemGroup>
 
+  <Import Project="$(EngRootPath)noop.targets" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
+
 </Project>

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RepoRootPath>$(MSBuildThisFileDirectory)</RepoRootPath>
+    <EngRootPath>$(RepoRootPath)eng/</EngRootPath>
     <SourceRootPath>$(RepoRootPath)src</SourceRootPath>
     <CentralBuildOutputPath>$(RepoRootPath)</CentralBuildOutputPath>
   </PropertyGroup>
