@@ -43,11 +43,17 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// </summary>
     /// <param name="member">The member.</param>
     /// <returns><see cref="int"/>.</returns>
-    public static int GetAccessibilityModifier(MemberDeclarationSyntax member)
+    public static int GetAccessibilityModifierOrder(MemberDeclarationSyntax member)
     {
         if (member is null)
         {
             throw new ArgumentNullException(nameof(member));
+        }
+
+        if (member is ConstructorDeclarationSyntax && member.Modifiers.Any(SyntaxKind.StaticKeyword))
+        {
+            // Special case static constructors to come first.
+            return -1;
         }
 
         // public
@@ -96,7 +102,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// </summary>
     /// <param name="member">The member.</param>
     /// <returns><see cref="int"/>.</returns>
-    public static int GetMemberCategory(MemberDeclarationSyntax member)
+    public static int GetMemberCategoryOrder(MemberDeclarationSyntax member)
     {
         if (member is null)
         {
@@ -146,6 +152,26 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     }
 
     /// <summary>
+    /// Gets the static order.
+    /// </summary>
+    /// <param name="member">The member.</param>
+    /// <returns><see cref="int"/>.</returns>
+    public static int GetStaticOrder(MemberDeclarationSyntax member)
+    {
+        if (member is null)
+        {
+            throw new ArgumentNullException(nameof(member));
+        }
+
+        if (member.Modifiers.Any(SyntaxKind.StaticKeyword))
+        {
+            return 0;
+        }
+
+        return 1;
+    }
+
+    /// <summary>
     /// Initializes the specified context.
     /// </summary>
     /// <param name="context">The context.</param>
@@ -168,8 +194,9 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         Location classLocation = classDeclaration.GetLocation();
         SyntaxList<MemberDeclarationSyntax> members = classDeclaration.Members;
         List<MemberDeclarationSyntax> sortedMembers = members
-            .OrderBy(GetMemberCategory)
-            .ThenBy(GetAccessibilityModifier)
+            .OrderBy(GetMemberCategoryOrder)
+            .ThenBy(GetAccessibilityModifierOrder)
+            .ThenBy(GetStaticOrder)
             .ThenBy(GetMemberName)
             .ToList();
 

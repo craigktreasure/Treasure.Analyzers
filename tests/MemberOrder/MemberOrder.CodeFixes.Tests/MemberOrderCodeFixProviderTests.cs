@@ -57,6 +57,29 @@ public class MemberOrderCodeFixProviderTests
     }
 
     [TestMethod]
+    public async Task CodeFix_FieldsOutOfStaticOrder_Reordered()
+    {
+        string test = @"
+        class MyClass
+        {
+            public int myPublicFieldA;
+            public static int myPublicStaticFieldA;
+        }";
+
+        string fixtest = @"
+        class MyClass
+        {
+            public static int myPublicStaticFieldA;
+            public int myPublicFieldA;
+        }";
+
+        DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation("", 2, 9)
+            .WithArguments("MyClass");
+        await VerifyCSCodeFix.VerifyCodeFixAsync(test, expected, fixtest);
+    }
+
+    [TestMethod]
     public async Task CodeFix_MembersOutOfTypeOrder_Reordered()
     {
         string test = @"
