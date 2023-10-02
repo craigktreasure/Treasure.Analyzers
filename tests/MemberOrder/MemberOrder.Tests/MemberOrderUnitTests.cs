@@ -17,30 +17,54 @@ public class MemberOrderUnitTest
         public class MyClass
         {
             // Fields
+            public static int myPublicStaticFieldA;
+            public static int myPublicStaticFieldB;
             public int myPublicFieldA;
             public int myPublicFieldB;
+            internal static int myInternalStaticFieldA;
+            internal static int myInternalStaticFieldB;
             internal int myInternalFieldA;
             internal int myInternalFieldB;
+            protected internal static int myProtectedInternalStaticFieldA;
+            protected internal static int myProtectedInternalStaticFieldB;
             protected internal int myProtectedInternalFieldA;
             protected internal int myProtectedInternalFieldB;
+            private protected static int myPrivateProtectedStaticFieldA;
+            private protected static int myPrivateProtectedStaticFieldB;
             private protected int myPrivateProtectedFieldA;
             private protected int myPrivateProtectedFieldB;
+            protected static int myProtectedStaticFieldA;
+            protected static int myProtectedStaticFieldB;
             protected int myProtectedFieldA;
             protected int myProtectedFieldB;
+            private static int myPrivateStaticFieldA;
+            private static int myPrivateStaticFieldB;
             private int myPrivateFieldA;
             private int myPrivateFieldB;
 
             // Properties
+            public static int MyPublicStaticPropertyA { get; set; }
+            public static int MyPublicStaticPropertyB { get; set; }
             public int MyPublicPropertyA { get; set; }
             public int MyPublicPropertyB { get; set; }
+            internal static int MyInternalStaticPropertyA { get; set; }
+            internal static int MyInternalStaticPropertyB { get; set; }
             internal int MyInternalPropertyA { get; set; }
             internal int MyInternalPropertyB { get; set; }
+            protected internal static int MyProtectedInternalStaticPropertyA { get; set; }
+            protected internal static int MyProtectedInternalStaticPropertyB { get; set; }
             protected internal int MyProtectedInternalPropertyA { get; set; }
             protected internal int MyProtectedInternalPropertyB { get; set; }
+            private protected static int MyPrivateProtectedStaticPropertyA { get; set; }
+            private protected static int MyPrivateProtectedStaticPropertyB { get; set; }
             private protected int MyPrivateProtectedPropertyA { get; set; }
             private protected int MyPrivateProtectedPropertyB { get; set; }
+            protected static int MyProtectedStaticPropertyA { get; set; }
+            protected static int MyProtectedStaticPropertyB { get; set; }
             protected int MyProtectedPropertyA { get; set; }
             protected int MyProtectedPropertyB { get; set; }
+            private static int MyPrivateStaticPropertyA { get; set; }
+            private static int MyPrivateStaticPropertyB { get; set; }
             private int MyPrivatePropertyA { get; set; }
             private int MyPrivatePropertyB { get; set; }
 
@@ -93,6 +117,7 @@ public class MemberOrderUnitTest
             private int this[int a, int b, int c, int d, int e, int f] { get => 0; set { } }
 
             // Constructors
+            static MyClass() { }
             public MyClass() { }
             internal MyClass(int a, int b) { }
             protected internal MyClass(int a) { }
@@ -104,16 +129,28 @@ public class MemberOrderUnitTest
             ~MyClass() { }
 
             // Methods
+            public static void MyPublicStaticMethodA() { }
+            public static void MyPublicStaticMethodB() { }
             public void MyPublicMethodA() { }
             public void MyPublicMethodB() { }
+            internal static void MyInternalStaticMethodA() { }
+            internal static void MyInternalStaticMethodB() { }
             internal void MyInternalMethodA() { }
             internal void MyInternalMethodB() { }
+            protected internal static void MyProtectedInternalStaticMethodA() { }
+            protected internal static void MyProtectedInternalStaticMethodB() { }
             protected internal void MyProtectedInternalMethodA() { }
             protected internal void MyProtectedInternalMethodB() { }
+            private protected static void MyPrivateProtectedStaticMethodA() { }
+            private protected static void MyPrivateProtectedStaticMethodB() { }
             private protected void MyPrivateProtectedMethodA() { }
             private protected void MyPrivateProtectedMethodB() { }
+            protected static void MyProtectedStaticMethodA() { }
+            protected static void MyProtectedStaticMethodB() { }
             protected void MyProtectedMethodA() { }
             protected void MyProtectedMethodB() { }
+            private static void MyPrivateStaticMethodA() { }
+            private static void MyPrivateStaticMethodB() { }
             private void MyPrivateMethodA() { }
             private void MyPrivateMethodB() { }
         }";
@@ -309,5 +346,39 @@ public class MemberOrderUnitTest
         string test = @"";
 
         await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
+    public void GetAccessibilityModifierOrder_NullMember_ThrowsArgumentNullException() =>
+
+        // Act and assert
+        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetAccessibilityModifierOrder(null!));
+
+    [TestMethod]
+    public void GetMemberCategoryOrder_NullMember_ThrowsArgumentNullException() =>
+
+        // Act and assert
+        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberCategoryOrder(null!));
+
+    [TestMethod]
+    public void GetMemberName_NullMember_ThrowsArgumentNullException() =>
+
+        // Act and assert
+        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberName(null!));
+
+    [TestMethod]
+    public void GetStaticOrder_NullMember_ThrowsArgumentNullException() =>
+
+        // Act and assert
+        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetStaticOrder(null!));
+
+    [TestMethod]
+    public void Initialize_NullContext_ThrowsArgumentNullException()
+    {
+        // Arrange
+        MemberOrderAnalyzer analyzer = new();
+
+        // Act and assert
+        Assert.ThrowsException<ArgumentNullException>(() => analyzer.Initialize(null!));
     }
 }
