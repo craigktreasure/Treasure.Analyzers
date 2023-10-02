@@ -57,20 +57,22 @@ public class MemberOrderCodeFixProviderTests
     }
 
     [TestMethod]
-    public async Task CodeFix_FieldsOutOfStaticOrder_Reordered()
+    public async Task CodeFix_FieldsOutOfSpecialKeywordOrder_Reordered()
     {
         string test = @"
         class MyClass
         {
-            public int myPublicFieldA;
-            public static int myPublicStaticFieldA;
+            public int myPublicField;
+            public static int myPublicStaticField;
+            public const int myPublicConstantField = 0;
         }";
 
         string fixtest = @"
         class MyClass
         {
-            public static int myPublicStaticFieldA;
-            public int myPublicFieldA;
+            public const int myPublicConstantField = 0;
+            public static int myPublicStaticField;
+            public int myPublicField;
         }";
 
         DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
