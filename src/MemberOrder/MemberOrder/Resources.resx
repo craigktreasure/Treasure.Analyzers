@@ -117,16 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="TA0001AnalyzerDescription" xml:space="preserve">
-    <value>Members in a type should be ordered by type, accessibility level, and name.</value>
+  <data name="Treasure0001AnalyzerDescription" xml:space="preserve">
+    <value>Members in a type should be ordered by type, keyword, accessibility level, and name.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
-  <data name="TA0001AnalyzerMessageFormat" xml:space="preserve">
-    <value>Members of the '{0}' type should be ordered by type, accessibility level, and name</value>
+  <data name="Treasure0001AnalyzerMessageFormat" xml:space="preserve">
+    <value>Members of the '{0}' type should be ordered by type, keyword, accessibility level, and name</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
-  <data name="TA0001AnalyzerTitle" xml:space="preserve">
-    <value>Members should be ordered by type, accessibility level, and name</value>
+  <data name="Treasure0001AnalyzerTitle" xml:space="preserve">
+    <value>Members should be ordered by type, keyword, accessibility level, and name</value>
     <comment>The title of the diagnostic.</comment>
   </data>
 </root>
