@@ -147,7 +147,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             ConstructorDeclarationSyntax constructor => constructor.Identifier.Text,
             DestructorDeclarationSyntax destructor => destructor.Identifier.Text,
             MethodDeclarationSyntax method => method.Identifier.Text,
-            _ => throw new InvalidOperationException("Unable to get member name."),
+            _ => throw new InvalidOperationException($"Unable to get member name: '{member}'"),
         };
     }
 
