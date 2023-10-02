@@ -38,6 +38,7 @@
     <!-- Configure project naming. -->
     <ProjectPrefix>Treasure.Analyzers</ProjectPrefix>
     <RootNamespace>$(ProjectPrefix).$(MSBuildProjectName)</RootNamespace>
+    <RootNamespace>$(RootNamespace.Replace(".Library", ""))</RootNamespace>
     <AssemblyName>$(ProjectPrefix).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 

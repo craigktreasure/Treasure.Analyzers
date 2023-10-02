@@ -61,7 +61,7 @@ namespace Treasure.Analyzers.MemberOrder.CodeFixes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make uppercase.
+        ///   Looks up a localized string similar to Reorder members.
         /// </summary>
         internal static string CodeFixTitle {
             get {

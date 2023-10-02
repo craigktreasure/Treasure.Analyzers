@@ -4,6 +4,8 @@ using System.Collections.Immutable;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 /// <summary>
@@ -17,14 +19,17 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// <summary>
     /// The diagnostic identifier.
     /// </summary>
-    public const string DiagnosticId = "MemberOrder";
+    public const string DiagnosticId = "TA0001";
+
+    private const string Category = "Ordering";
+
+    private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.TA0001AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
+
+    private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.TA0001AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
 
     // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
     // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Localizing%20Analyzers.md for more on localization
-    private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
-    private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
-    private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
-    private const string Category = "Design";
+    private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.TA0001AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
 
     private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
@@ -32,6 +37,113 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// Gets the supported diagnostics.
     /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+
+    /// <summary>
+    /// Gets the accessibility modifier.
+    /// </summary>
+    /// <param name="member">The member.</param>
+    /// <returns><see cref="int"/>.</returns>
+    public static int GetAccessibilityModifier(MemberDeclarationSyntax member)
+    {
+        if (member is null)
+        {
+            throw new ArgumentNullException(nameof(member));
+        }
+
+        // public
+        if (member.Modifiers.Any(SyntaxKind.PublicKeyword))
+        {
+            return 0;
+        }
+
+        // internal
+        else if (member.Modifiers.Any(SyntaxKind.InternalKeyword) && !member.Modifiers.Any(SyntaxKind.ProtectedKeyword))
+        {
+            return 1;
+        }
+
+        // protected internal
+        else if (member.Modifiers.Any(SyntaxKind.ProtectedKeyword) && member.Modifiers.Any(SyntaxKind.InternalKeyword))
+        {
+            return 2;
+        }
+
+        // private protected
+        else if (member.Modifiers.Any(SyntaxKind.PrivateKeyword) && member.Modifiers.Any(SyntaxKind.ProtectedKeyword))
+        {
+            return 3;
+        }
+
+        // protected
+        else if (member.Modifiers.Any(SyntaxKind.ProtectedKeyword) && !member.Modifiers.Any(SyntaxKind.PrivateKeyword))
+        {
+            return 4;
+        }
+
+        // private
+        else if (member.Modifiers.Any(SyntaxKind.PrivateKeyword))
+        {
+            return 5;
+        }
+        else
+        {
+            return 99;
+        }
+    }
+
+    /// <summary>
+    /// Gets the member category.
+    /// </summary>
+    /// <param name="member">The member.</param>
+    /// <returns><see cref="int"/>.</returns>
+    public static int GetMemberCategory(MemberDeclarationSyntax member)
+    {
+        if (member is null)
+        {
+            throw new ArgumentNullException(nameof(member));
+        }
+
+        return member switch
+        {
+            FieldDeclarationSyntax => 0,
+            PropertyDeclarationSyntax => 1,
+            DelegateDeclarationSyntax => 2,
+            EventFieldDeclarationSyntax => 3,
+            EventDeclarationSyntax => 3,
+            IndexerDeclarationSyntax => 4,
+            ConstructorDeclarationSyntax => 5,
+            DestructorDeclarationSyntax => 6,
+            MethodDeclarationSyntax => 7,
+            _ => 99,
+        };
+    }
+
+    /// <summary>
+    /// Gets the name of the member.
+    /// </summary>
+    /// <param name="member">The member.</param>
+    /// <returns><see cref="string"/>.</returns>
+    public static string GetMemberName(MemberDeclarationSyntax member)
+    {
+        if (member is null)
+        {
+            throw new ArgumentNullException(nameof(member));
+        }
+
+        return member switch
+        {
+            FieldDeclarationSyntax field => field.Declaration.Variables.First().Identifier.Text,
+            PropertyDeclarationSyntax property => property.Identifier.Text,
+            DelegateDeclarationSyntax @delegate => @delegate.Identifier.Text,
+            EventDeclarationSyntax @event => @event.Identifier.Text,
+            EventFieldDeclarationSyntax eventField => eventField.Declaration.Variables.First().Identifier.Text,
+            IndexerDeclarationSyntax => string.Empty,
+            ConstructorDeclarationSyntax constructor => constructor.Identifier.Text,
+            DestructorDeclarationSyntax destructor => destructor.Identifier.Text,
+            MethodDeclarationSyntax method => method.Identifier.Text,
+            _ => throw new InvalidOperationException("Unable to get member name."),
+        };
+    }
 
     /// <summary>
     /// Initializes the specified context.
@@ -47,23 +159,30 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
-        // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-        context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
+        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
     }
 
-    private static void AnalyzeSymbol(SymbolAnalysisContext context)
+    private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
-        // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-        INamedTypeSymbol namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
+        ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)context.Node;
+        Location classLocation = classDeclaration.GetLocation();
+        SyntaxList<MemberDeclarationSyntax> members = classDeclaration.Members;
+        List<MemberDeclarationSyntax> sortedMembers = members
+            .OrderBy(GetMemberCategory)
+            .ThenBy(GetAccessibilityModifier)
+            .ThenBy(GetMemberName)
+            .ToList();
 
-        // Find just those named type symbols with names containing lowercase letters.
-        if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
+        for (int i = 0; i < members.Count; i++)
         {
-            // For all such symbols, produce a diagnostic.
-            Diagnostic diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
-
-            context.ReportDiagnostic(diagnostic);
+            MemberDeclarationSyntax member = members[i];
+            MemberDeclarationSyntax sortedMember = sortedMembers[i];
+            if (sortedMember != member)
+            {
+                Diagnostic diagnostic = Diagnostic.Create(Rule, classLocation, classDeclaration.Identifier.Text);
+                context.ReportDiagnostic(diagnostic);
+                break;
+            }
         }
     }
 }

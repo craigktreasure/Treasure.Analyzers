@@ -1,22 +1,21 @@
-﻿namespace Treasure.Analyzers.MemberOrder.Test.Verifiers;
-
-using Microsoft.CodeAnalysis.CodeFixes;
+﻿namespace MemberOrder.Test;
+using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 
-public static partial class CSharpCodeFixVerifier<TAnalyzer, TCodeFix>
-    where TAnalyzer : DiagnosticAnalyzer, new()
-    where TCodeFix : CodeFixProvider, new()
+using Treasure.Analyzers.TestVerifiers;
+
+public static partial class CSharpCodeRefactoringVerifier<TCodeRefactoring>
+    where TCodeRefactoring : CodeRefactoringProvider, new()
 {
-    internal sealed class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, MSTestVerifier>
+    internal sealed class Test : CSharpCodeRefactoringTest<TCodeRefactoring, MSTestVerifier>
     {
         public Test()
         {
             this.SolutionTransforms.Add((solution, projectId) =>
             {
                 Microsoft.CodeAnalysis.CompilationOptions? compilationOptions = solution.GetProject(projectId)?.CompilationOptions
-                    ?? throw new InvalidOperationException("Unable to get projects' compilation options");
+                    ?? throw new InvalidOperationException("Unable to get project's compilation options.");
                 compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
                     compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
                 solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);

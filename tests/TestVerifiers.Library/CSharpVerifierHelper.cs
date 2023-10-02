@@ -1,4 +1,4 @@
-﻿namespace Treasure.Analyzers.MemberOrder.Test.Verifiers;
+﻿namespace Treasure.Analyzers.TestVerifiers;
 
 using System;
 using System.Collections.Immutable;

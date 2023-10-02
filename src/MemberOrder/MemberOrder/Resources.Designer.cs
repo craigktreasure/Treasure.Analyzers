@@ -61,29 +61,29 @@ namespace Treasure.Analyzers.MemberOrder {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type names should be all uppercase..
+        ///   Looks up a localized string similar to Members in a type should be ordered by type, accessibility level, and name..
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string TA0001AnalyzerDescription {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("TA0001AnalyzerDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type name &apos;{0}&apos; contains lowercase letters.
+        ///   Looks up a localized string similar to Members of the &apos;{0}&apos; type should be ordered by type, accessibility level, and name.
         /// </summary>
-        internal static string AnalyzerMessageFormat {
+        internal static string TA0001AnalyzerMessageFormat {
             get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("TA0001AnalyzerMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type name contains lowercase letters.
+        ///   Looks up a localized string similar to Members should be ordered by type, accessibility level, and name.
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string TA0001AnalyzerTitle {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("TA0001AnalyzerTitle", resourceCulture);
             }
         }
     }

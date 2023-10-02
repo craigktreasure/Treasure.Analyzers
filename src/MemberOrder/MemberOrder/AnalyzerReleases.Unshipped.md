@@ -5,4 +5,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-MemberOrder  |  Design  |  Warning | MemberOrderAnalyzer
+TA0001  | Ordering |  Warning | TA0001_MemberOrder

@@ -12,7 +12,6 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Rename;
 using Microsoft.CodeAnalysis.Text;
 
 /// <summary>
@@ -51,45 +50,64 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         SyntaxNode? root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException("The root value was null.");
 
-        // TODO: Replace the following code with your own analysis, generating a CodeAction for each fix to suggest
-        Diagnostic diagnostic = context.Diagnostics.First();
-        TextSpan diagnosticSpan = diagnostic.Location.SourceSpan;
+        foreach (Diagnostic diagnostic in context.Diagnostics)
+        {
+            TextSpan diagnosticSpan = diagnostic.Location.SourceSpan;
+            ClassDeclarationSyntax classDeclaration = root.FindToken(diagnosticSpan.Start).Parent?.AncestorsAndSelf().OfType<ClassDeclarationSyntax>().First()
+                ?? throw new InvalidOperationException("The classDeclaration was null.");
 
-        // Find the type declaration identified by the diagnostic.
-        TypeDeclarationSyntax declaration = root.FindToken(diagnosticSpan.Start).Parent!.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
-
-        // Register a code action that will invoke the fix.
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: CodeFixResources.CodeFixTitle,
-                createChangedSolution: c => MakeUppercaseAsync(context.Document, declaration, c),
-                equivalenceKey: nameof(CodeFixResources.CodeFixTitle)),
-            diagnostic);
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    title: CodeFixResources.CodeFixTitle,
+                    createChangedDocument: c => ReorderMembersAsync(context.Document, classDeclaration, c),
+                    equivalenceKey: nameof(CodeFixResources.CodeFixTitle)),
+                diagnostic);
+        }
     }
 
-    private static async Task<Solution> MakeUppercaseAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
+    private static async Task<Document> ReorderMembersAsync(Document document, ClassDeclarationSyntax classDeclaration, CancellationToken cancellationToken)
     {
-        // Compute new uppercase name.
-        SyntaxToken identifierToken = typeDecl.Identifier;
-        string newName = identifierToken.Text.ToUpperInvariant();
+        SyntaxList<MemberDeclarationSyntax> members = classDeclaration.Members;
+        List<MemberDeclarationSyntax> sortedMembers = members
+            .OrderBy(MemberOrderAnalyzer.GetMemberCategory)
+            .ThenBy(MemberOrderAnalyzer.GetAccessibilityModifier)
+            .ThenBy(MemberOrderAnalyzer.GetMemberName)
+            .ToList();
+        TryKeepWhiteSpace(ref members, sortedMembers);
+        ClassDeclarationSyntax newClassDeclaration = classDeclaration.WithMembers(SyntaxFactory.List(sortedMembers));
 
-        // Get the symbol representing the type to be renamed.
-        SemanticModel? semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-        INamedTypeSymbol? typeSymbol = semanticModel?.GetDeclaredSymbol(typeDecl, cancellationToken)
-            ?? throw new InvalidOperationException("Unable to get type symbol from semantic model.");
+        SyntaxNode? root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("The root value was null.");
+        SyntaxNode newRoot = root.ReplaceNode(classDeclaration, newClassDeclaration);
 
-        // Produce a new solution that has all references to that type renamed, including the declaration.
-        Solution originalSolution = document.Project.Solution;
-        Microsoft.CodeAnalysis.Options.OptionSet optionSet = originalSolution.Workspace.Options;
-#pragma warning disable CS0618 // Type or member is obsolete
-        SymbolRenameOptions options = new(
-            RenameOverloads: optionSet.GetOption(RenameOptions.RenameOverloads),
-            RenameInStrings: optionSet.GetOption(RenameOptions.RenameInStrings),
-            RenameInComments: optionSet.GetOption(RenameOptions.RenameInComments));
-#pragma warning restore CS0618 // Type or member is obsolete
-        Solution newSolution = await Renamer.RenameSymbolAsync(document.Project.Solution, typeSymbol, options, newName, cancellationToken).ConfigureAwait(false);
+        return document.WithSyntaxRoot(newRoot);
+    }
 
-        // Return the new solution with the now-uppercase type name.
-        return newSolution;
+    /// <summary>
+    /// Tries to keep the white space. This isn't expected to be perfect.
+    /// </summary>
+    /// <param name="members">The members.</param>
+    /// <param name="sortedMembers">The sorted members.</param>
+    private static void TryKeepWhiteSpace(ref SyntaxList<MemberDeclarationSyntax> members, List<MemberDeclarationSyntax> sortedMembers)
+    {
+        MemberDeclarationSyntax firstMember = members[0];
+        MemberDeclarationSyntax firstSortedMember = sortedMembers[0];
+        if (firstMember != firstSortedMember)
+        {
+            sortedMembers[0] = firstSortedMember
+                .WithLeadingTrivia(firstMember.GetLeadingTrivia())
+                .WithTrailingTrivia(firstMember.GetTrailingTrivia());
+        }
+
+        int lastIndex = sortedMembers.Count - 1;
+        MemberDeclarationSyntax lastMember = members[lastIndex];
+        MemberDeclarationSyntax lastSortedMember = sortedMembers[lastIndex];
+
+        if (lastMember != lastSortedMember)
+        {
+            sortedMembers[lastIndex] = lastSortedMember
+                .WithTrailingTrivia(lastMember.GetTrailingTrivia())
+                .WithLeadingTrivia(lastMember.GetLeadingTrivia());
+        }
     }
 }
