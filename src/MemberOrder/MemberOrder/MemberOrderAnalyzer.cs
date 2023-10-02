@@ -152,23 +152,28 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     }
 
     /// <summary>
-    /// Gets the static order.
+    /// Gets the special keyword order.
     /// </summary>
     /// <param name="member">The member.</param>
     /// <returns><see cref="int"/>.</returns>
-    public static int GetStaticOrder(MemberDeclarationSyntax member)
+    public static int GetSpecialKeywordOrder(MemberDeclarationSyntax member)
     {
         if (member is null)
         {
             throw new ArgumentNullException(nameof(member));
         }
 
-        if (member.Modifiers.Any(SyntaxKind.StaticKeyword))
+        if (member.Modifiers.Any(SyntaxKind.ConstKeyword))
         {
             return 0;
         }
 
-        return 1;
+        if (member.Modifiers.Any(SyntaxKind.StaticKeyword))
+        {
+            return 1;
+        }
+
+        return 99;
     }
 
     /// <summary>
@@ -196,7 +201,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         List<MemberDeclarationSyntax> sortedMembers = members
             .OrderBy(GetMemberCategoryOrder)
             .ThenBy(GetAccessibilityModifierOrder)
-            .ThenBy(GetStaticOrder)
+            .ThenBy(GetSpecialKeywordOrder)
             .ThenBy(GetMemberName)
             .ToList();
 

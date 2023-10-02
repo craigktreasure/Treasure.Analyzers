@@ -71,7 +71,7 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         List<MemberDeclarationSyntax> sortedMembers = members
             .OrderBy(MemberOrderAnalyzer.GetMemberCategoryOrder)
             .ThenBy(MemberOrderAnalyzer.GetAccessibilityModifierOrder)
-            .ThenBy(MemberOrderAnalyzer.GetStaticOrder)
+            .ThenBy(MemberOrderAnalyzer.GetSpecialKeywordOrder)
             .ThenBy(MemberOrderAnalyzer.GetMemberName)
             .ToList();
         TryKeepWhiteSpace(ref members, sortedMembers);

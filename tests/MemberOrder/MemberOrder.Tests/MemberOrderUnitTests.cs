@@ -17,26 +17,38 @@ public class MemberOrderUnitTest
         public class MyClass
         {
             // Fields
+            public const int myPublicConstantFieldA = 0;
+            public const int myPublicConstantFieldB = 0;
             public static int myPublicStaticFieldA;
             public static int myPublicStaticFieldB;
             public int myPublicFieldA;
             public int myPublicFieldB;
+            internal const int myInternalConstantFieldA = 0;
+            internal const int myInternalConstantFieldB = 0;
             internal static int myInternalStaticFieldA;
             internal static int myInternalStaticFieldB;
             internal int myInternalFieldA;
             internal int myInternalFieldB;
+            protected internal const int myProtectedInternalConstantFieldA = 0;
+            protected internal const int myProtectedInternalConstantFieldB = 0;
             protected internal static int myProtectedInternalStaticFieldA;
             protected internal static int myProtectedInternalStaticFieldB;
             protected internal int myProtectedInternalFieldA;
             protected internal int myProtectedInternalFieldB;
+            private protected const int myPrivateProtectedConstantFieldA = 0;
+            private protected const int myPrivateProtectedConstantFieldB = 0;
             private protected static int myPrivateProtectedStaticFieldA;
             private protected static int myPrivateProtectedStaticFieldB;
             private protected int myPrivateProtectedFieldA;
             private protected int myPrivateProtectedFieldB;
+            protected const int myProtectedConstantFieldA = 0;
+            protected const int myProtectedConstantFieldB = 0;
             protected static int myProtectedStaticFieldA;
             protected static int myProtectedStaticFieldB;
             protected int myProtectedFieldA;
             protected int myProtectedFieldB;
+            private const int myPrivateConstantFieldA = 0;
+            private const int myPrivateConstantFieldB = 0;
             private static int myPrivateStaticFieldA;
             private static int myPrivateStaticFieldB;
             private int myPrivateFieldA;
@@ -367,10 +379,10 @@ public class MemberOrderUnitTest
         Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberName(null!));
 
     [TestMethod]
-    public void GetStaticOrder_NullMember_ThrowsArgumentNullException() =>
+    public void GetSpecialKeywordOrder_NullMember_ThrowsArgumentNullException() =>
 
         // Act and assert
-        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetStaticOrder(null!));
+        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetSpecialKeywordOrder(null!));
 
     [TestMethod]
     public void Initialize_NullContext_ThrowsArgumentNullException()
