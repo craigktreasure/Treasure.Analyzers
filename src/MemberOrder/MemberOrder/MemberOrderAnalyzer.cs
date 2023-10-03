@@ -168,9 +168,19 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             return 0;
         }
 
-        if (member.Modifiers.Any(SyntaxKind.StaticKeyword))
+        if (member.Modifiers.Any(SyntaxKind.StaticKeyword) && member.Modifiers.Any(SyntaxKind.ReadOnlyKeyword))
         {
             return 1;
+        }
+
+        if (member.Modifiers.Any(SyntaxKind.StaticKeyword))
+        {
+            return 2;
+        }
+
+        if (member.Modifiers.Any(SyntaxKind.ReadOnlyKeyword))
+        {
+            return 3;
         }
 
         return 99;

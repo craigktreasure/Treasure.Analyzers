@@ -63,7 +63,9 @@ public class MemberOrderCodeFixProviderTests
         class MyClass
         {
             public int myPublicField;
+            public readonly int myPublicReadonlyField = 1;
             public static int myPublicStaticField;
+            public static readonly int myPublicStaticReadonlyField;
             public const int myPublicConstantField = 0;
         }";
 
@@ -71,7 +73,9 @@ public class MemberOrderCodeFixProviderTests
         class MyClass
         {
             public const int myPublicConstantField = 0;
+            public static readonly int myPublicStaticReadonlyField;
             public static int myPublicStaticField;
+            public readonly int myPublicReadonlyField = 1;
             public int myPublicField;
         }";
 
