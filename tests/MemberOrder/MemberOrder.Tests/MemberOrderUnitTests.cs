@@ -2,6 +2,8 @@
 
 using System.Threading.Tasks;
 
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -438,10 +440,33 @@ public class MemberOrderUnitTest
         Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberCategoryOrder(null!));
 
     [TestMethod]
+    public void GetMemberCategoryOrder_UnexpectedMember_Returns99()
+    {
+        // Arrange
+        MemberDeclarationSyntax unexpectedMemberSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName("MyNamespace"));
+
+        // Act
+        int result = MemberOrderAnalyzer.GetMemberCategoryOrder(unexpectedMemberSyntax);
+
+        // Assert
+        Assert.AreEqual(99, result);
+    }
+
+    [TestMethod]
     public void GetMemberName_NullMember_ThrowsArgumentNullException() =>
 
         // Act and assert
         Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberName(null!));
+
+    [TestMethod]
+    public void GetMemberName_UnexpectedMember_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        MemberDeclarationSyntax unexpectedMemberSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName("MyNamespace"));
+
+        // Act and assert
+        Assert.ThrowsException<InvalidOperationException>(() => MemberOrderAnalyzer.GetMemberName(unexpectedMemberSyntax));
+    }
 
     [TestMethod]
     public void GetSpecialKeywordOrder_NullMember_ThrowsArgumentNullException() =>
