@@ -2,6 +2,8 @@
 
 using System.Threading.Tasks;
 
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -313,6 +315,40 @@ public class MemberOrderUnitTest
     }
 
     [TestMethod]
+    public async Task Analyzer_Class_KeywordsInOrder_NoDiagnostics()
+    {
+        string test = @"
+        public class MyClass
+        {
+            // Fields
+            public const int myPublicConstantField = 0;
+            public static readonly int myPublicStaticReadonlyField;
+            public static int myPublicStaticField;
+            public readonly int myPublicReadonlyField = 1;
+            public int myPublicField;
+
+            // Properties
+            public static int MyPublicStaticProperty { get; set; }
+            public int MyPublicProperty { get; set; }
+
+            // Delegates
+            public delegate void MyPublicDelegate();
+
+            // Events and event fields
+            public static event MyPublicDelegate MyPublicStaticEvent { add { } remove { } }
+            public static event MyPublicDelegate MyPublicStaticEventField;
+            public event MyPublicDelegate MyPublicEvent { add { } remove { } }
+            public event MyPublicDelegate MyPublicEventField;
+
+            // Methods
+            public static void MyPublicStaticMethod() { }
+            public void MyPublicMethod() { }
+        }";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task Analyzer_Class_MethodBeforeDeconstructor_SingleDiagnostic()
     {
         string test = @"
@@ -353,6 +389,37 @@ public class MemberOrderUnitTest
     }
 
     [TestMethod]
+    public async Task Analyzer_Class_SubTypes_NoDiagnostics()
+    {
+        string test = @"
+        public class MyClass
+        {
+            // Methods
+            public void MyPublicMethod() { }
+
+            // Enums
+            public enum MySubEnum { EnumValue, }
+
+            // Interfaces
+            public interface IMySubInterface { }
+
+            // Structs
+            public struct MySubStruct { }
+
+            // Record structs
+            public record struct MySubRecordStruct { }
+
+            // Records
+            public record MySubRecord { }
+
+            // Classes
+            public class MySubClass { }
+        }";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task Analyzer_EmptyContent_NoDiagnostics()
     {
         string test = @"";
@@ -373,10 +440,33 @@ public class MemberOrderUnitTest
         Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberCategoryOrder(null!));
 
     [TestMethod]
+    public void GetMemberCategoryOrder_UnexpectedMember_Returns99()
+    {
+        // Arrange
+        MemberDeclarationSyntax unexpectedMemberSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName("MyNamespace"));
+
+        // Act
+        int result = MemberOrderAnalyzer.GetMemberCategoryOrder(unexpectedMemberSyntax);
+
+        // Assert
+        Assert.AreEqual(99, result);
+    }
+
+    [TestMethod]
     public void GetMemberName_NullMember_ThrowsArgumentNullException() =>
 
         // Act and assert
         Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberName(null!));
+
+    [TestMethod]
+    public void GetMemberName_UnexpectedMember_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        MemberDeclarationSyntax unexpectedMemberSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.IdentifierName("MyNamespace"));
+
+        // Act and assert
+        Assert.ThrowsException<InvalidOperationException>(() => MemberOrderAnalyzer.GetMemberName(unexpectedMemberSyntax));
+    }
 
     [TestMethod]
     public void GetSpecialKeywordOrder_NullMember_ThrowsArgumentNullException() =>
