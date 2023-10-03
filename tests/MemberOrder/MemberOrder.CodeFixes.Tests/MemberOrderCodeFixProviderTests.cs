@@ -3,13 +3,72 @@
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using VerifyCSCodeFix = Test.Verifiers.CSharpCodeFixVerifier<
+using VerifyCS = Test.Verifiers.CSharpCodeFixVerifier<
     MemberOrderAnalyzer,
     MemberOrderCodeFixProvider>;
 
 [TestClass]
 public class MemberOrderCodeFixProviderTests
 {
+    [TestMethod]
+    public async Task CodeFix_Class_SubTypesOutOfOrder_Reordered()
+    {
+        string test = @"
+        public class MyClass
+        {
+            // Classes
+            public class MySubClass { }
+
+            // Records
+            public record MySubRecord { }
+
+            // Record structs
+            public record struct MySubRecordStruct { }
+
+            // Structs
+            public struct MySubStruct { }
+
+            // Interfaces
+            public interface IMySubInterface { }
+
+            // Enums
+            public enum MySubEnum { EnumValue, }
+
+            // Methods
+            public void MyPublicMethod() { }
+        }";
+
+        string fixtest = @"
+        public class MyClass
+        {
+            // Methods
+            public void MyPublicMethod() { }
+
+            // Enums
+            public enum MySubEnum { EnumValue, }
+
+            // Interfaces
+            public interface IMySubInterface { }
+
+            // Structs
+            public struct MySubStruct { }
+
+            // Record structs
+            public record struct MySubRecordStruct { }
+
+            // Records
+            public record MySubRecord { }
+
+            // Classes
+            public class MySubClass { }
+        }";
+
+        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation("", 2, 9)
+            .WithArguments("MyClass");
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+    }
+
     [TestMethod]
     public async Task CodeFix_FieldsOutOfAccesibilityOrder_Reordered()
     {
@@ -27,10 +86,10 @@ public class MemberOrderCodeFixProviderTests
             private int myPrivateField;
         }";
 
-        DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
             .WithLocation("", 2, 9)
             .WithArguments("MyClass");
-        await VerifyCSCodeFix.VerifyCodeFixAsync(test, expected, fixtest);
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
 
     [TestMethod]
@@ -50,10 +109,10 @@ public class MemberOrderCodeFixProviderTests
             public int myPublicFieldB;
         }";
 
-        DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
             .WithLocation("", 2, 9)
             .WithArguments("MyClass");
-        await VerifyCSCodeFix.VerifyCodeFixAsync(test, expected, fixtest);
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
 
     [TestMethod]
@@ -79,10 +138,10 @@ public class MemberOrderCodeFixProviderTests
             public int myPublicField;
         }";
 
-        DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
             .WithLocation("", 2, 9)
             .WithArguments("MyClass");
-        await VerifyCSCodeFix.VerifyCodeFixAsync(test, expected, fixtest);
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
 
     [TestMethod]
@@ -116,10 +175,10 @@ public class MemberOrderCodeFixProviderTests
             private void MyPrivateMethodB() { }
         }";
 
-        DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
             .WithLocation("", 2, 9)
             .WithArguments("MyClass");
-        await VerifyCSCodeFix.VerifyCodeFixAsync(test, expected, fixtest);
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
 
     [TestMethod]
@@ -169,9 +228,9 @@ public class MemberOrderCodeFixProviderTests
             private void MyPrivateMethodB() { }
         }";
 
-        DiagnosticResult expected = VerifyCSCodeFix.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
             .WithLocation("", 2, 9)
             .WithArguments("MyClass");
-        await VerifyCSCodeFix.VerifyCodeFixAsync(test, expected, fixtest);
+        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
     }
 }

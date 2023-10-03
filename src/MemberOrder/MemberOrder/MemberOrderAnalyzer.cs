@@ -1,6 +1,7 @@
 ﻿namespace Treasure.Analyzers.MemberOrder;
 
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using Microsoft.CodeAnalysis;
@@ -102,6 +103,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// </summary>
     /// <param name="member">The member.</param>
     /// <returns><see cref="int"/>.</returns>
+    [SuppressMessage("Style", "IDE0072:Add missing cases", Justification = "Selective handling with a default case.")]
     public static int GetMemberCategoryOrder(MemberDeclarationSyntax member)
     {
         if (member is null)
@@ -109,17 +111,23 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             throw new ArgumentNullException(nameof(member));
         }
 
-        return member switch
+        return member.Kind() switch
         {
-            FieldDeclarationSyntax => 0,
-            PropertyDeclarationSyntax => 1,
-            DelegateDeclarationSyntax => 2,
-            EventFieldDeclarationSyntax => 3,
-            EventDeclarationSyntax => 3,
-            IndexerDeclarationSyntax => 4,
-            ConstructorDeclarationSyntax => 5,
-            DestructorDeclarationSyntax => 6,
-            MethodDeclarationSyntax => 7,
+            SyntaxKind.FieldDeclaration => 0,
+            SyntaxKind.PropertyDeclaration => 1,
+            SyntaxKind.DelegateDeclaration => 2,
+            SyntaxKind.EventFieldDeclaration => 3,
+            SyntaxKind.EventDeclaration => 3,
+            SyntaxKind.IndexerDeclaration => 4,
+            SyntaxKind.ConstructorDeclaration => 5,
+            SyntaxKind.DestructorDeclaration => 6,
+            SyntaxKind.MethodDeclaration => 7,
+            SyntaxKind.EnumDeclaration => 8,
+            SyntaxKind.InterfaceDeclaration => 9,
+            SyntaxKind.StructDeclaration => 10,
+            SyntaxKind.RecordStructDeclaration => 11,
+            SyntaxKind.RecordDeclaration => 12,
+            SyntaxKind.ClassDeclaration => 13,
             _ => 99,
         };
     }
@@ -138,15 +146,16 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
 
         return member switch
         {
-            FieldDeclarationSyntax field => field.Declaration.Variables.First().Identifier.Text,
+            // Field and Event Field
+            BaseFieldDeclarationSyntax field => field.Declaration.Variables.First().Identifier.Text,
             PropertyDeclarationSyntax property => property.Identifier.Text,
             DelegateDeclarationSyntax @delegate => @delegate.Identifier.Text,
             EventDeclarationSyntax @event => @event.Identifier.Text,
-            EventFieldDeclarationSyntax eventField => eventField.Declaration.Variables.First().Identifier.Text,
             IndexerDeclarationSyntax => string.Empty,
             ConstructorDeclarationSyntax constructor => constructor.Identifier.Text,
             DestructorDeclarationSyntax destructor => destructor.Identifier.Text,
             MethodDeclarationSyntax method => method.Identifier.Text,
+            BaseTypeDeclarationSyntax type => type.Identifier.Text,
             _ => throw new InvalidOperationException($"Unable to get member name: '{member}'"),
         };
     }

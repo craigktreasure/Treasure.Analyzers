@@ -96,8 +96,8 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         if (firstMember != firstSortedMember)
         {
             sortedMembers[0] = firstSortedMember
-                .WithLeadingTrivia(firstMember.GetLeadingTrivia())
-                .WithTrailingTrivia(firstMember.GetTrailingTrivia());
+                .WithLeadingWhitespaceFrom(firstMember)
+                .WithTrailingTriviaFrom(firstMember);
         }
 
         int lastIndex = sortedMembers.Count - 1;
@@ -107,8 +107,8 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         if (lastMember != lastSortedMember)
         {
             sortedMembers[lastIndex] = lastSortedMember
-                .WithTrailingTrivia(lastMember.GetTrailingTrivia())
-                .WithLeadingTrivia(lastMember.GetLeadingTrivia());
+                .WithLeadingWhitespaceFrom(lastMember)
+                .WithTrailingTriviaFrom(lastMember);
         }
     }
 }

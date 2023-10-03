@@ -171,40 +171,6 @@ public class MemberOrderUnitTest
     }
 
     [TestMethod]
-    public async Task Analyzer_Class_KeywordsInOrder_NoDiagnostics()
-    {
-        string test = @"
-        public class MyClass
-        {
-            // Fields
-            public const int myPublicConstantField = 0;
-            public static readonly int myPublicStaticReadonlyField;
-            public static int myPublicStaticField;
-            public readonly int myPublicReadonlyField = 1;
-            public int myPublicField;
-
-            // Properties
-            public static int MyPublicStaticProperty { get; set; }
-            public int MyPublicProperty { get; set; }
-
-            // Delegates
-            public delegate void MyPublicDelegate();
-
-            // Events and event fields
-            public static event MyPublicDelegate MyPublicStaticEvent { add { } remove { } }
-            public static event MyPublicDelegate MyPublicStaticEventField;
-            public event MyPublicDelegate MyPublicEvent { add { } remove { } }
-            public event MyPublicDelegate MyPublicEventField;
-
-            // Methods
-            public static void MyPublicStaticMethod() { }
-            public void MyPublicMethod() { }
-        }";
-
-        await VerifyCS.VerifyAnalyzerAsync(test);
-    }
-
-    [TestMethod]
     public async Task Analyzer_Class_ConstructorBeforeIndexer_SingleDiagnostic()
     {
         string test = @"
@@ -347,6 +313,40 @@ public class MemberOrderUnitTest
     }
 
     [TestMethod]
+    public async Task Analyzer_Class_KeywordsInOrder_NoDiagnostics()
+    {
+        string test = @"
+        public class MyClass
+        {
+            // Fields
+            public const int myPublicConstantField = 0;
+            public static readonly int myPublicStaticReadonlyField;
+            public static int myPublicStaticField;
+            public readonly int myPublicReadonlyField = 1;
+            public int myPublicField;
+
+            // Properties
+            public static int MyPublicStaticProperty { get; set; }
+            public int MyPublicProperty { get; set; }
+
+            // Delegates
+            public delegate void MyPublicDelegate();
+
+            // Events and event fields
+            public static event MyPublicDelegate MyPublicStaticEvent { add { } remove { } }
+            public static event MyPublicDelegate MyPublicStaticEventField;
+            public event MyPublicDelegate MyPublicEvent { add { } remove { } }
+            public event MyPublicDelegate MyPublicEventField;
+
+            // Methods
+            public static void MyPublicStaticMethod() { }
+            public void MyPublicMethod() { }
+        }";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
+    }
+
+    [TestMethod]
     public async Task Analyzer_Class_MethodBeforeDeconstructor_SingleDiagnostic()
     {
         string test = @"
@@ -384,6 +384,37 @@ public class MemberOrderUnitTest
         };
 
         await VerifyCS.VerifyAnalyzerAsync(test, expected);
+    }
+
+    [TestMethod]
+    public async Task Analyzer_Class_SubTypes_NoDiagnostics()
+    {
+        string test = @"
+        public class MyClass
+        {
+            // Methods
+            public void MyPublicMethod() { }
+
+            // Enums
+            public enum MySubEnum { EnumValue, }
+
+            // Interfaces
+            public interface IMySubInterface { }
+
+            // Structs
+            public struct MySubStruct { }
+
+            // Record structs
+            public record struct MySubRecordStruct { }
+
+            // Records
+            public record MySubRecord { }
+
+            // Classes
+            public class MySubClass { }
+        }";
+
+        await VerifyCS.VerifyAnalyzerAsync(test);
     }
 
     [TestMethod]
