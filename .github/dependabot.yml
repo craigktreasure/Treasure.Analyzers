@@ -12,6 +12,16 @@ updates:
     - craigktreasure
   assignees:
     - craigktreasure
+  groups:
+    coverlet:
+      patterns:
+      - "coverlet*"
+    MSTest:
+      patterns:
+      - "MSTest.*"
+    Microsoft.CodeAnalysis:
+      patterns:
+      - "Microsoft.CodeAnalysis*"
 
 - package-ecosystem: github-actions
   directory: "/"
