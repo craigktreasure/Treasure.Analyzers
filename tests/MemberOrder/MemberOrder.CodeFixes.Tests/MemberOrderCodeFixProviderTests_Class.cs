@@ -8,12 +8,13 @@ using VerifyCS = Test.Verifiers.CSharpCodeFixVerifier<
     MemberOrderCodeFixProvider>;
 
 [TestClass]
-public class MemberOrderCodeFixProviderTests
+public class MemberOrderCodeFixProviderTests_Class
 {
     [TestMethod]
-    public async Task CodeFix_Class_SubTypesOutOfOrder_Reordered()
+    public async Task CodeFix_SubTypesOutOfOrder_Reordered()
     {
-        string test = @"
+        // Arrange
+        const string sourceText = @"
         public class MyClass
         {
             // Classes
@@ -38,7 +39,7 @@ public class MemberOrderCodeFixProviderTests
             public void MyPublicMethod() { }
         }";
 
-        string fixtest = @"
+        const string expectedFixedSourceText = @"
         public class MyClass
         {
             // Methods
@@ -63,62 +64,71 @@ public class MemberOrderCodeFixProviderTests
             public class MySubClass { }
         }";
 
-        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation("", 2, 9)
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 2, 9)
             .WithArguments("MyClass");
-        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
     }
 
     [TestMethod]
     public async Task CodeFix_FieldsOutOfAccesibilityOrder_Reordered()
     {
-        string test = @"
+        // Arrange
+        const string sourceText = @"
         class MyClass
         {
             private int myPrivateField;
             public int myPublicField;
         }";
 
-        string fixtest = @"
+        const string expectedFixedSourceText = @"
         class MyClass
         {
             public int myPublicField;
             private int myPrivateField;
         }";
 
-        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation("", 2, 9)
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 2, 9)
             .WithArguments("MyClass");
-        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
     }
 
     [TestMethod]
     public async Task CodeFix_FieldsOutOfNameOrder_Reordered()
     {
-        string test = @"
+        // Arrange
+        const string sourceText = @"
         class MyClass
         {
             public int myPublicFieldB;
             public int myPublicFieldA;
         }";
 
-        string fixtest = @"
+        const string expectedFixedSourceText = @"
         class MyClass
         {
             public int myPublicFieldA;
             public int myPublicFieldB;
         }";
 
-        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation("", 2, 9)
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 2, 9)
             .WithArguments("MyClass");
-        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
     }
 
     [TestMethod]
     public async Task CodeFix_FieldsOutOfSpecialKeywordOrder_Reordered()
     {
-        string test = @"
+        // Arrange
+        const string sourceText = @"
         class MyClass
         {
             public int myPublicField;
@@ -128,7 +138,7 @@ public class MemberOrderCodeFixProviderTests
             public const int myPublicConstantField = 0;
         }";
 
-        string fixtest = @"
+        const string expectedFixedSourceText = @"
         class MyClass
         {
             public const int myPublicConstantField = 0;
@@ -138,16 +148,19 @@ public class MemberOrderCodeFixProviderTests
             public int myPublicField;
         }";
 
-        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation("", 2, 9)
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 2, 9)
             .WithArguments("MyClass");
-        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
     }
 
     [TestMethod]
     public async Task CodeFix_MembersOutOfTypeOrder_Reordered()
     {
-        string test = @"
+        // Arrange
+        const string sourceText = @"
         class MyClass
         {
             private void MyPrivateMethodB() { }
@@ -161,7 +174,7 @@ public class MemberOrderCodeFixProviderTests
             private int myPrivateField;
         }";
 
-        string fixtest = @"
+        const string expectedFixedSourceText = @"
         class MyClass
         {
             private int myPrivateField;
@@ -175,16 +188,19 @@ public class MemberOrderCodeFixProviderTests
             private void MyPrivateMethodB() { }
         }";
 
-        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation("", 2, 9)
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 2, 9)
             .WithArguments("MyClass");
-        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
     }
 
     [TestMethod]
     public async Task CodeFix_MembersOutOfTypeOrderWithWhiteSpace_ReorderedWithWhiteSpaceMaintained()
     {
-        string test = @"
+        // Arrange
+        const string sourceText = @"
         class MyClass
         {
             private void MyPrivateMethodB() { }
@@ -206,7 +222,7 @@ public class MemberOrderCodeFixProviderTests
             private int myPrivateField;
         }";
 
-        string fixtest = @"
+        const string expectedFixedSourceText = @"
         class MyClass
         {
             private int myPrivateField;
@@ -228,9 +244,11 @@ public class MemberOrderCodeFixProviderTests
             private void MyPrivateMethodB() { }
         }";
 
-        DiagnosticResult expected = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation("", 2, 9)
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 2, 9)
             .WithArguments("MyClass");
-        await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
     }
 }

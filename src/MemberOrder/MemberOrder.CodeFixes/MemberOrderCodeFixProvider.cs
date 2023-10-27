@@ -53,21 +53,25 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         foreach (Diagnostic diagnostic in context.Diagnostics)
         {
             TextSpan diagnosticSpan = diagnostic.Location.SourceSpan;
-            ClassDeclarationSyntax classDeclaration = root.FindToken(diagnosticSpan.Start).Parent?.AncestorsAndSelf().OfType<ClassDeclarationSyntax>().First()
-                ?? throw new InvalidOperationException("The classDeclaration was null.");
+            TypeDeclarationSyntax declaration = root
+                .FindToken(diagnosticSpan.Start)
+                .Parent?.AncestorsAndSelf()
+                .OfType<TypeDeclarationSyntax>()
+                .Single()
+                ?? throw new InvalidOperationException("The type declaration was null.");
 
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: CodeFixResources.Treasure0001CodeFixTitle,
-                    createChangedDocument: c => ReorderMembersAsync(context.Document, classDeclaration, c),
+                    createChangedDocument: c => ReorderMembersAsync(context.Document, declaration, c),
                     equivalenceKey: nameof(CodeFixResources.Treasure0001CodeFixTitle)),
                 diagnostic);
         }
     }
 
-    private static async Task<Document> ReorderMembersAsync(Document document, ClassDeclarationSyntax classDeclaration, CancellationToken cancellationToken)
+    private static async Task<Document> ReorderMembersAsync(Document document, TypeDeclarationSyntax declaration, CancellationToken cancellationToken)
     {
-        SyntaxList<MemberDeclarationSyntax> members = classDeclaration.Members;
+        SyntaxList<MemberDeclarationSyntax> members = declaration.Members;
         List<MemberDeclarationSyntax> sortedMembers = members
             .OrderBy(MemberOrderAnalyzer.GetMemberCategoryOrder)
             .ThenBy(MemberOrderAnalyzer.GetAccessibilityModifierOrder)
@@ -75,11 +79,11 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
             .ThenBy(MemberOrderAnalyzer.GetMemberName)
             .ToList();
         TryKeepWhiteSpace(ref members, sortedMembers);
-        ClassDeclarationSyntax newClassDeclaration = classDeclaration.WithMembers(SyntaxFactory.List(sortedMembers));
+        TypeDeclarationSyntax newDeclaration = declaration.WithMembers(SyntaxFactory.List(sortedMembers));
 
         SyntaxNode? root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException("The root value was null.");
-        SyntaxNode newRoot = root.ReplaceNode(classDeclaration, newClassDeclaration);
+        SyntaxNode newRoot = root.ReplaceNode(declaration, newDeclaration);
 
         return document.WithSyntaxRoot(newRoot);
     }

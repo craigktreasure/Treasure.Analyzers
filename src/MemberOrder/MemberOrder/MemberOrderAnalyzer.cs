@@ -210,13 +210,14 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         context.EnableConcurrentExecution();
 
         context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
     }
 
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
-        ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)context.Node;
-        Location classLocation = classDeclaration.GetLocation();
-        SyntaxList<MemberDeclarationSyntax> members = classDeclaration.Members;
+        TypeDeclarationSyntax typeDeclaration = (TypeDeclarationSyntax)context.Node;
+        Location declarationLocation = typeDeclaration.GetLocation();
+        SyntaxList<MemberDeclarationSyntax> members = typeDeclaration.Members;
         List<MemberDeclarationSyntax> sortedMembers = members
             .OrderBy(GetMemberCategoryOrder)
             .ThenBy(GetAccessibilityModifierOrder)
@@ -230,7 +231,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             MemberDeclarationSyntax sortedMember = sortedMembers[i];
             if (sortedMember != member)
             {
-                Diagnostic diagnostic = Diagnostic.Create(Rule, classLocation, classDeclaration.Identifier.Text);
+                Diagnostic diagnostic = Diagnostic.Create(Rule, declarationLocation, typeDeclaration.Identifier.Text);
                 context.ReportDiagnostic(diagnostic);
                 break;
             }
