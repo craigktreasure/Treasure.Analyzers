@@ -211,6 +211,8 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
 
         context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
         context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordStructDeclaration);
     }
 
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
