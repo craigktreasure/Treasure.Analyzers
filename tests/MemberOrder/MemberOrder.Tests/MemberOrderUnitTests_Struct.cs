@@ -11,10 +11,10 @@ using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 public class MemberOrderUnitTest_Struct
 {
     [TestMethod]
-    public async Task Analyzer_AllCategoriesModifiersAndNamesInOrder_NoDiagnostics()
+    public async Task Category_AllCategoriesModifiersAndNamesInOrder_NoDiagnostics()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             // Fields
@@ -163,27 +163,29 @@ public class MemberOrderUnitTest_Struct
             private static void MyPrivateStaticMethodB() { }
             private void MyPrivateMethodA() { }
             private void MyPrivateMethodB() { }
-        }";
+        }
+        """;
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);
     }
 
     [TestMethod]
-    public async Task Analyzer_ConstructorBeforeIndexer_SingleDiagnostic()
+    public async Task Category_ConstructorBeforeIndexer_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public MyStruct() { }
             public int this[int a] { get => 0; set { } }
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -192,20 +194,21 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_DelegateBeforeProperty_SingleDiagnostic()
+    public async Task Category_DelegateBeforeProperty_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public delegate void MyDelegate();
             public string MyProperty { get; set; }
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -214,20 +217,21 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_EventBeforeDelegate_SingleDiagnostic()
+    public async Task Category_EventBeforeDelegate_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public event MyDelegate MyEvent { add { } remove { } }
             public delegate void MyDelegate();
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -236,20 +240,21 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_EventFieldBeforeDelegate_SingleDiagnostic()
+    public async Task Category_EventFieldBeforeDelegate_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public event MyDelegate MyEventField;
             public delegate void MyDelegate();
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -258,21 +263,22 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_IndexerBeforeEvent_SingleDiagnostic()
+    public async Task Category_IndexerBeforeEvent_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public delegate void MyDelegate();
             public int this[int a] { get => 0; set { } }
             public event MyDelegate MyEvent { add { } remove { } }
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -281,21 +287,22 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_IndexerBeforeEventField_SingleDiagnostic()
+    public async Task Category_IndexerBeforeEventField_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public delegate void MyDelegate();
             public int this[int a] { get => 0; set { } }
             public event MyDelegate MyEventField;
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -304,10 +311,10 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_KeywordsInOrder_NoDiagnostics()
+    public async Task Category_KeywordsInOrder_NoDiagnostics()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             // Fields
@@ -336,27 +343,29 @@ public class MemberOrderUnitTest_Struct
             // Methods
             public static void MyPublicStaticMethod() { }
             public void MyPublicMethod() { }
-        }";
+        }
+        """;
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);
     }
 
     [TestMethod]
-    public async Task Analyzer_PropertyBeforeField_SingleDiagnostic()
+    public async Task Category_PropertyBeforeField_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             public string MyProperty { get; set; }
             public int myField;
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyStruct"),
         };
 
@@ -365,10 +374,10 @@ public class MemberOrderUnitTest_Struct
     }
 
     [TestMethod]
-    public async Task Analyzer_SubTypes_NoDiagnostics()
+    public async Task Category_SubTypes_NoDiagnostics()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public struct MyStruct
         {
             // Methods
@@ -391,7 +400,8 @@ public class MemberOrderUnitTest_Struct
 
             // Classes
             public class MySubClass { }
-        }";
+        }
+        """;
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);

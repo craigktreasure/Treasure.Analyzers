@@ -11,10 +11,110 @@ using VerifyCS = Test.Verifiers.CSharpCodeFixVerifier<
 public class MemberOrderCodeFixProviderTests_Class
 {
     [TestMethod]
-    public async Task CodeFix_SubTypesOutOfOrder_Reordered()
+    public async Task Category_MembersTypeNotInOrder_Reordered()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
+        class MyClass
+        {
+            private void MyPrivateMethodB() { }
+            ~MyClass() { }
+            private MyClass() { }
+            private int this[int a] { get => 0; set { } }
+            private event MyPrivateDelegate MyPrivateEventField;
+            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
+            private delegate void MyPrivateDelegate();
+            private int MyPrivateProperty { get; set; }
+            private int myPrivateField;
+        }
+        """;
+
+        const string expectedFixedSourceText = """
+        class MyClass
+        {
+            private int myPrivateField;
+            private int MyPrivateProperty { get; set; }
+            private delegate void MyPrivateDelegate();
+            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
+            private event MyPrivateDelegate MyPrivateEventField;
+            private int this[int a] { get => 0; set { } }
+            private MyClass() { }
+            ~MyClass() { }
+            private void MyPrivateMethodB() { }
+        }
+        """;
+
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 1, 1)
+            .WithArguments("MyClass");
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
+    }
+
+    [TestMethod]
+    public async Task Category_MembersTypeNotInOrderWithWhiteSpace_ReorderedWithWhiteSpaceMaintained()
+    {
+        // Arrange
+        const string sourceText = """
+        class MyClass
+        {
+            private void MyPrivateMethodB() { }
+
+            ~MyClass() { }
+
+            private MyClass() { }
+
+            private int this[int a] { get => 0; set { } }
+
+            private event MyPrivateDelegate MyPrivateEventField;
+
+            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
+
+            private delegate void MyPrivateDelegate();
+
+            private int MyPrivateProperty { get; set; }
+
+            private int myPrivateField;
+        }
+        """;
+
+        const string expectedFixedSourceText = """
+        class MyClass
+        {
+            private int myPrivateField;
+
+            private int MyPrivateProperty { get; set; }
+
+            private delegate void MyPrivateDelegate();
+
+            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
+
+            private event MyPrivateDelegate MyPrivateEventField;
+
+            private int this[int a] { get => 0; set { } }
+
+            private MyClass() { }
+
+            ~MyClass() { }
+
+            private void MyPrivateMethodB() { }
+        }
+        """;
+
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 1, 1)
+            .WithArguments("MyClass");
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
+    }
+
+    [TestMethod]
+    public async Task Category_SubTypesNotInOrder_Reordered()
+    {
+        // Arrange
+        const string sourceText = """
         public class MyClass
         {
             // Classes
@@ -37,9 +137,10 @@ public class MemberOrderCodeFixProviderTests_Class
 
             // Methods
             public void MyPublicMethod() { }
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         public class MyClass
         {
             // Methods
@@ -62,10 +163,11 @@ public class MemberOrderCodeFixProviderTests_Class
 
             // Classes
             public class MySubClass { }
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyClass");
 
         // Act and assert
@@ -73,25 +175,27 @@ public class MemberOrderCodeFixProviderTests_Class
     }
 
     [TestMethod]
-    public async Task CodeFix_FieldsOutOfAccesibilityOrder_Reordered()
+    public async Task Fields_AccesibilityNotInOrder_Reordered()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         class MyClass
         {
             private int myPrivateField;
             public int myPublicField;
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         class MyClass
         {
             public int myPublicField;
             private int myPrivateField;
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyClass");
 
         // Act and assert
@@ -99,25 +203,27 @@ public class MemberOrderCodeFixProviderTests_Class
     }
 
     [TestMethod]
-    public async Task CodeFix_FieldsOutOfNameOrder_Reordered()
+    public async Task Fields_AlphabeticalNotInOrder_Reordered()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         class MyClass
         {
             public int myPublicFieldB;
             public int myPublicFieldA;
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         class MyClass
         {
             public int myPublicFieldA;
             public int myPublicFieldB;
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyClass");
 
         // Act and assert
@@ -125,10 +231,10 @@ public class MemberOrderCodeFixProviderTests_Class
     }
 
     [TestMethod]
-    public async Task CodeFix_FieldsOutOfSpecialKeywordOrder_Reordered()
+    public async Task Fields_SpecialKeywordNotInOrder_Reordered()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         class MyClass
         {
             public int myPublicField;
@@ -136,9 +242,10 @@ public class MemberOrderCodeFixProviderTests_Class
             public static int myPublicStaticField;
             public static readonly int myPublicStaticReadonlyField;
             public const int myPublicConstantField = 0;
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         class MyClass
         {
             public const int myPublicConstantField = 0;
@@ -146,106 +253,11 @@ public class MemberOrderCodeFixProviderTests_Class
             public static int myPublicStaticField;
             public readonly int myPublicReadonlyField = 1;
             public int myPublicField;
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
-            .WithArguments("MyClass");
-
-        // Act and assert
-        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
-    }
-
-    [TestMethod]
-    public async Task CodeFix_MembersOutOfTypeOrder_Reordered()
-    {
-        // Arrange
-        const string sourceText = @"
-        class MyClass
-        {
-            private void MyPrivateMethodB() { }
-            ~MyClass() { }
-            private MyClass() { }
-            private int this[int a] { get => 0; set { } }
-            private event MyPrivateDelegate MyPrivateEventField;
-            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
-            private delegate void MyPrivateDelegate();
-            private int MyPrivateProperty { get; set; }
-            private int myPrivateField;
-        }";
-
-        const string expectedFixedSourceText = @"
-        class MyClass
-        {
-            private int myPrivateField;
-            private int MyPrivateProperty { get; set; }
-            private delegate void MyPrivateDelegate();
-            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
-            private event MyPrivateDelegate MyPrivateEventField;
-            private int this[int a] { get => 0; set { } }
-            private MyClass() { }
-            ~MyClass() { }
-            private void MyPrivateMethodB() { }
-        }";
-
-        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
-            .WithArguments("MyClass");
-
-        // Act and assert
-        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
-    }
-
-    [TestMethod]
-    public async Task CodeFix_MembersOutOfTypeOrderWithWhiteSpace_ReorderedWithWhiteSpaceMaintained()
-    {
-        // Arrange
-        const string sourceText = @"
-        class MyClass
-        {
-            private void MyPrivateMethodB() { }
-
-            ~MyClass() { }
-
-            private MyClass() { }
-
-            private int this[int a] { get => 0; set { } }
-
-            private event MyPrivateDelegate MyPrivateEventField;
-
-            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
-
-            private delegate void MyPrivateDelegate();
-
-            private int MyPrivateProperty { get; set; }
-
-            private int myPrivateField;
-        }";
-
-        const string expectedFixedSourceText = @"
-        class MyClass
-        {
-            private int myPrivateField;
-
-            private int MyPrivateProperty { get; set; }
-
-            private delegate void MyPrivateDelegate();
-
-            private event MyPrivateDelegate MyPrivateEvent { add { } remove { } }
-
-            private event MyPrivateDelegate MyPrivateEventField;
-
-            private int this[int a] { get => 0; set { } }
-
-            private MyClass() { }
-
-            ~MyClass() { }
-
-            private void MyPrivateMethodB() { }
-        }";
-
-        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyClass");
 
         // Act and assert

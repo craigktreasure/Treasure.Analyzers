@@ -11,10 +11,92 @@ using VerifyCS = Test.Verifiers.CSharpCodeFixVerifier<
 public class MemberOrderCodeFixProviderTests_Interface
 {
     [TestMethod]
-    public async Task CodeFix_SubTypesOutOfOrder_Reordered()
+    public async Task Category_MembersTypeNotInOrderWithWhiteSpace_ReorderedWithWhiteSpaceMaintained()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
+        interface MyInterface
+        {
+            void MyMethodB() { }
+
+            int this[int a] { get => 0; set { } }
+
+            event MyDelegate MyEventField;
+
+            event MyDelegate MyEvent { add { } remove { } }
+
+            delegate void MyDelegate();
+
+            int MyProperty { get; set; }
+        }
+        """;
+
+        const string expectedFixedSourceText = """
+        interface MyInterface
+        {
+            int MyProperty { get; set; }
+
+            delegate void MyDelegate();
+
+            event MyDelegate MyEvent { add { } remove { } }
+
+            event MyDelegate MyEventField;
+
+            int this[int a] { get => 0; set { } }
+
+            void MyMethodB() { }
+        }
+        """;
+
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 1, 1)
+            .WithArguments("MyInterface");
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
+    }
+
+    [TestMethod]
+    public async Task Category_MemberTypeNotInOrder_Reordered()
+    {
+        // Arrange
+        const string sourceText = """
+        interface MyInterface
+        {
+            void MyMethodB() { }
+            int this[int a] { get => 0; set { } }
+            event MyDelegate MyEventField;
+            event MyDelegate MyEvent { add { } remove { } }
+            delegate void MyDelegate();
+            int MyProperty { get; set; }
+        }
+        """;
+
+        const string expectedFixedSourceText = """
+        interface MyInterface
+        {
+            int MyProperty { get; set; }
+            delegate void MyDelegate();
+            event MyDelegate MyEvent { add { } remove { } }
+            event MyDelegate MyEventField;
+            int this[int a] { get => 0; set { } }
+            void MyMethodB() { }
+        }
+        """;
+
+        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+            .WithLocation(string.Empty, 1, 1)
+            .WithArguments("MyInterface");
+
+        // Act and assert
+        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
+    }
+
+    [TestMethod]
+    public async Task Category_SubTypesNotInOrder_Reordered()
+    {
+        // Arrange
+        const string sourceText = """
         public interface MyInterface
         {
             // Classes
@@ -37,9 +119,10 @@ public class MemberOrderCodeFixProviderTests_Interface
 
             // Methods
             public void MyPublicMethod() { }
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         public interface MyInterface
         {
             // Methods
@@ -62,10 +145,11 @@ public class MemberOrderCodeFixProviderTests_Interface
 
             // Classes
             public class MySubClass { }
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyInterface");
 
         // Act and assert
@@ -73,25 +157,27 @@ public class MemberOrderCodeFixProviderTests_Interface
     }
 
     [TestMethod]
-    public async Task CodeFix_MethodsOutOfAccesibilityOrder_Reordered()
+    public async Task Methods_AccesibilityNotInOrder_Reordered()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         interface MyInterface
         {
             private int MyPrivateMethod() => 1;
             public int MyPublicMethod() => 1;
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         interface MyInterface
         {
             public int MyPublicMethod() => 1;
             private int MyPrivateMethod() => 1;
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyInterface");
 
         // Act and assert
@@ -99,103 +185,27 @@ public class MemberOrderCodeFixProviderTests_Interface
     }
 
     [TestMethod]
-    public async Task CodeFix_PropertiesOutOfNameOrder_Reordered()
+    public async Task Properties_AlphabeticalNotInOrder_Reordered()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         interface MyInterface
         {
             int MyPropertyB { get; set; }
             int MyPropertyA { get; set; }
-        }";
+        }
+        """;
 
-        const string expectedFixedSourceText = @"
+        const string expectedFixedSourceText = """
         interface MyInterface
         {
             int MyPropertyA { get; set; }
             int MyPropertyB { get; set; }
-        }";
+        }
+        """;
 
         DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
-            .WithArguments("MyInterface");
-
-        // Act and assert
-        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
-    }
-
-    [TestMethod]
-    public async Task CodeFix_MembersOutOfTypeOrder_Reordered()
-    {
-        // Arrange
-        const string sourceText = @"
-        interface MyInterface
-        {
-            void MyMethodB() { }
-            int this[int a] { get => 0; set { } }
-            event MyDelegate MyEventField;
-            event MyDelegate MyEvent { add { } remove { } }
-            delegate void MyDelegate();
-            int MyProperty { get; set; }
-        }";
-
-        const string expectedFixedSourceText = @"
-        interface MyInterface
-        {
-            int MyProperty { get; set; }
-            delegate void MyDelegate();
-            event MyDelegate MyEvent { add { } remove { } }
-            event MyDelegate MyEventField;
-            int this[int a] { get => 0; set { } }
-            void MyMethodB() { }
-        }";
-
-        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
-            .WithArguments("MyInterface");
-
-        // Act and assert
-        await VerifyCS.VerifyCodeFixAsync(sourceText, expectedDiagnosticResults, expectedFixedSourceText);
-    }
-
-    [TestMethod]
-    public async Task CodeFix_MembersOutOfTypeOrderWithWhiteSpace_ReorderedWithWhiteSpaceMaintained()
-    {
-        // Arrange
-        const string sourceText = @"
-        interface MyInterface
-        {
-            void MyMethodB() { }
-
-            int this[int a] { get => 0; set { } }
-
-            event MyDelegate MyEventField;
-
-            event MyDelegate MyEvent { add { } remove { } }
-
-            delegate void MyDelegate();
-
-            int MyProperty { get; set; }
-        }";
-
-        const string expectedFixedSourceText = @"
-        interface MyInterface
-        {
-            int MyProperty { get; set; }
-
-            delegate void MyDelegate();
-
-            event MyDelegate MyEvent { add { } remove { } }
-
-            event MyDelegate MyEventField;
-
-            int this[int a] { get => 0; set { } }
-
-            void MyMethodB() { }
-        }";
-
-        DiagnosticResult expectedDiagnosticResults = VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-            .WithLocation(string.Empty, 2, 9)
+            .WithLocation(string.Empty, 1, 1)
             .WithArguments("MyInterface");
 
         // Act and assert

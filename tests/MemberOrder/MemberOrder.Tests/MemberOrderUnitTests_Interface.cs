@@ -11,10 +11,10 @@ using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 public class MemberOrderUnitTest_Interface
 {
     [TestMethod]
-    public async Task Analyzer_AllCategoriesModifiersAndNamesInOrder_NoDiagnostics()
+    public async Task Category_AllCategoriesModifiersAndNamesInOrder_NoDiagnostics()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             // Properties
@@ -121,27 +121,29 @@ public class MemberOrderUnitTest_Interface
             private static void MyPrivateStaticMethodB() { }
             private void MyPrivateMethodA() { }
             private void MyPrivateMethodB() { }
-        }";
+        }
+        """;
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);
     }
 
     [TestMethod]
-    public async Task Analyzer_DelegateBeforeProperty_SingleDiagnostic()
+    public async Task Category_DelegateBeforeProperty_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             public delegate void MyDelegate();
             public string MyProperty { get; set; }
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
         };
 
@@ -150,20 +152,21 @@ public class MemberOrderUnitTest_Interface
     }
 
     [TestMethod]
-    public async Task Analyzer_EventBeforeDelegate_SingleDiagnostic()
+    public async Task Category_EventBeforeDelegate_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             public event MyDelegate MyEvent { add { } remove { } }
             public delegate void MyDelegate();
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
         };
 
@@ -172,20 +175,21 @@ public class MemberOrderUnitTest_Interface
     }
 
     [TestMethod]
-    public async Task Analyzer_EventFieldBeforeDelegate_SingleDiagnostic()
+    public async Task Category_EventFieldBeforeDelegate_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             public event MyDelegate MyEventField;
             public delegate void MyDelegate();
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
         };
 
@@ -194,21 +198,22 @@ public class MemberOrderUnitTest_Interface
     }
 
     [TestMethod]
-    public async Task Analyzer_IndexerBeforeEvent_SingleDiagnostic()
+    public async Task Category_IndexerBeforeEvent_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             public delegate void MyDelegate();
             public int this[int a] { get => 0; set { } }
             public event MyDelegate MyEvent { add { } remove { } }
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
         };
 
@@ -217,21 +222,22 @@ public class MemberOrderUnitTest_Interface
     }
 
     [TestMethod]
-    public async Task Analyzer_IndexerBeforeEventField_SingleDiagnostic()
+    public async Task Category_IndexerBeforeEventField_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             public delegate void MyDelegate();
             public int this[int a] { get => 0; set { } }
             public event MyDelegate MyEventField;
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
         };
 
@@ -240,10 +246,10 @@ public class MemberOrderUnitTest_Interface
     }
 
     [TestMethod]
-    public async Task Analyzer_KeywordsInOrder_NoDiagnostics()
+    public async Task Category_KeywordsInOrder_NoDiagnostics()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             // Fields
@@ -271,27 +277,29 @@ public class MemberOrderUnitTest_Interface
             void MyInterfaceMethod() { }
             public static void MyPublicStaticMethod() { }
             public void MyPublicMethod() { }
-        }";
+        }
+        """;
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);
     }
 
     [TestMethod]
-    public async Task Analyzer_MethodBeforeIndexer_SingleDiagnostic()
+    public async Task Category_MethodBeforeIndexer_SingleDiagnostic()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             void MyMethod() { }
             int this[string a] { get; set; }
-        }";
+        }
+        """;
 
         DiagnosticResult[] expectedDiagnosticResults = new[]
         {
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 2, 9)
+                .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
         };
 
@@ -300,10 +308,10 @@ public class MemberOrderUnitTest_Interface
     }
 
     [TestMethod]
-    public async Task Analyzer_SubTypes_NoDiagnostics()
+    public async Task Category_SubTypes_NoDiagnostics()
     {
         // Arrange
-        const string sourceText = @"
+        const string sourceText = """
         public interface MyInterface
         {
             // Methods
@@ -326,7 +334,8 @@ public class MemberOrderUnitTest_Interface
 
             // Classes
             public class MySubClass { }
-        }";
+        }
+        """;
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);

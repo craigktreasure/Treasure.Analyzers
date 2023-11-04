@@ -9,7 +9,7 @@ using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 public sealed class MemberOrderUnitTests
 {
     [TestMethod]
-    public async Task Analyzer_EmptyContent_NoDiagnostics() =>
+    public async Task EmptyContent_NoDiagnostics() =>
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(string.Empty);
