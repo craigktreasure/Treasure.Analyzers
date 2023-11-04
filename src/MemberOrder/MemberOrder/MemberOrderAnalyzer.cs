@@ -98,10 +98,8 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         {
             return 6;
         }
-        else
-        {
-            return 99;
-        }
+
+        return 99;
     }
 
     /// <summary>
@@ -215,11 +213,17 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.InterfaceDeclaration);
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordDeclaration);
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordStructDeclaration);
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
+        foreach (SyntaxKind syntaxKind in new[]
+        {
+            SyntaxKind.ClassDeclaration,
+            SyntaxKind.InterfaceDeclaration,
+            SyntaxKind.RecordDeclaration,
+            SyntaxKind.RecordStructDeclaration,
+            SyntaxKind.StructDeclaration,
+        })
+        {
+            context.RegisterSyntaxNodeAction(AnalyzeNode, syntaxKind);
+        }
     }
 
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)

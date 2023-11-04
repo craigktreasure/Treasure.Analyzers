@@ -10,7 +10,7 @@ using Treasure.Analyzers.MemberOrder.Tests.TestUtils;
 using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 
 [TestClass]
-public class MemberOrderUnitTest_Class
+public class MemberOrderUnitTests_Class
 {
     [TestMethod]
     public async Task Category_AllCategoriesModifiersAndNamesInOrder_NoDiagnostics()
