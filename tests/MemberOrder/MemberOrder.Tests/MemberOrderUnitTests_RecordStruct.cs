@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Treasure.Analyzers.MemberOrder.Tests.TestUtils;
+
 using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 
 [TestClass]
@@ -30,24 +32,6 @@ public class MemberOrderUnitTest_RecordStruct
             internal static int myInternalStaticFieldB;
             internal int myInternalFieldA;
             internal int myInternalFieldB;
-            // protected internal const int myProtectedInternalConstantFieldA = 0;
-            // protected internal const int myProtectedInternalConstantFieldB = 0;
-            // protected internal static int myProtectedInternalStaticFieldA;
-            // protected internal static int myProtectedInternalStaticFieldB;
-            // protected internal int myProtectedInternalFieldA;
-            // protected internal int myProtectedInternalFieldB;
-            // private protected const int myPrivateProtectedConstantFieldA = 0;
-            // private protected const int myPrivateProtectedConstantFieldB = 0;
-            // private protected static int myPrivateProtectedStaticFieldA;
-            // private protected static int myPrivateProtectedStaticFieldB;
-            // private protected int myPrivateProtectedFieldA;
-            // private protected int myPrivateProtectedFieldB;
-            // protected const int myProtectedConstantFieldA = 0;
-            // protected const int myProtectedConstantFieldB = 0;
-            // protected static int myProtectedStaticFieldA;
-            // protected static int myProtectedStaticFieldB;
-            // protected int myProtectedFieldA;
-            // protected int myProtectedFieldB;
             private const int myPrivateConstantFieldA = 0;
             private const int myPrivateConstantFieldB = 0;
             private static int myPrivateStaticFieldA;
@@ -64,18 +48,6 @@ public class MemberOrderUnitTest_RecordStruct
             internal static int MyInternalStaticPropertyB { get; set; }
             internal int MyInternalPropertyA { get; set; }
             internal int MyInternalPropertyB { get; set; }
-            // protected internal static int MyProtectedInternalStaticPropertyA { get; set; }
-            // protected internal static int MyProtectedInternalStaticPropertyB { get; set; }
-            // protected internal int MyProtectedInternalPropertyA { get; set; }
-            // protected internal int MyProtectedInternalPropertyB { get; set; }
-            // private protected static int MyPrivateProtectedStaticPropertyA { get; set; }
-            // private protected static int MyPrivateProtectedStaticPropertyB { get; set; }
-            // private protected int MyPrivateProtectedPropertyA { get; set; }
-            // private protected int MyPrivateProtectedPropertyB { get; set; }
-            // protected static int MyProtectedStaticPropertyA { get; set; }
-            // protected static int MyProtectedStaticPropertyB { get; set; }
-            // protected int MyProtectedPropertyA { get; set; }
-            // protected int MyProtectedPropertyB { get; set; }
             private static int MyPrivateStaticPropertyA { get; set; }
             private static int MyPrivateStaticPropertyB { get; set; }
             private int MyPrivatePropertyA { get; set; }
@@ -86,12 +58,6 @@ public class MemberOrderUnitTest_RecordStruct
             public delegate void MyPublicDelegateB();
             internal delegate void MyInternalDelegateA();
             internal delegate void MyInternalDelegateB();
-            // protected internal delegate void MyProtectedInternalDelegateA();
-            // protected internal delegate void MyProtectedInternalDelegateB();
-            // private protected delegate void MyPrivateProtectedDelegateA();
-            // private protected delegate void MyPrivateProtectedDelegateB();
-            // protected delegate void MyProtectedDelegateA();
-            // protected delegate void MyProtectedDelegateB();
             private delegate void MyPrivateDelegateA();
             private delegate void MyPrivateDelegateB();
 
@@ -104,18 +70,6 @@ public class MemberOrderUnitTest_RecordStruct
             internal event MyInternalDelegateB MyInternalEventB { add { } remove { } }
             internal event MyInternalDelegateA MyInternalEventFieldA;
             internal event MyInternalDelegateB MyInternalEventFieldB;
-            // protected internal event MyProtectedInternalDelegateA MyProtectedInternalEventA { add { } remove { } }
-            // protected internal event MyProtectedInternalDelegateB MyProtectedInternalEventB { add { } remove { } }
-            // protected internal event MyProtectedInternalDelegateA MyProtectedInternalEventFieldA;
-            // protected internal event MyProtectedInternalDelegateB MyProtectedInternalEventFieldB;
-            // private protected event MyPrivateProtectedDelegateA MyPrivateProtectedEventA { add { } remove { } }
-            // private protected event MyPrivateProtectedDelegateB MyPrivateProtectedEventB { add { } remove { } }
-            // private protected event MyPrivateProtectedDelegateA MyPrivateProtectedEventFieldA;
-            // private protected event MyPrivateProtectedDelegateB MyPrivateProtectedEventFieldB;
-            // protected event MyProtectedDelegateA MyProtectedEventA { add { } remove { } }
-            // protected event MyProtectedDelegateB MyProtectedEventB { add { } remove { } }
-            // protected event MyProtectedDelegateA MyProtectedEventFieldA;
-            // protected event MyProtectedDelegateB MyProtectedEventFieldB;
             private event MyPrivateDelegateA MyPrivateEventA { add { } remove { } }
             private event MyPrivateDelegateB MyPrivateEventB { add { } remove { } }
             private event MyPrivateDelegateA MyPrivateEventFieldA;
@@ -124,18 +78,12 @@ public class MemberOrderUnitTest_RecordStruct
             // Indexers
             public int this[int a] { get => 0; set { } }
             internal int this[int a, int b] { get => 0; set { } }
-            // protected internal int this[int a, int b, int c] { get => 0; set { } }
-            // private protected int this[int a, int b, int c, int d] { get => 0; set { } }
-            // protected int this[int a, int b, int c, int d, int e] { get => 0; set { } }
             private int this[int a, int b, int c, int d, int e, int f] { get => 0; set { } }
 
             // Constructors
             static MyRecordStruct() { }
             public MyRecordStruct() { }
             internal MyRecordStruct(int a, int b) { }
-            //protected internal MyRecordStruct(int a) { }
-            //private protected MyRecordStruct(int a, int b, int c, int d) { }
-            //protected MyRecordStruct(int a, int b, int c) { }
             private MyRecordStruct(int a, int b, int c, int d, int e) { }
 
             // Methods
@@ -147,18 +95,6 @@ public class MemberOrderUnitTest_RecordStruct
             internal static void MyInternalStaticMethodB() { }
             internal void MyInternalMethodA() { }
             internal void MyInternalMethodB() { }
-            // protected internal static void MyProtectedInternalStaticMethodA() { }
-            // protected internal static void MyProtectedInternalStaticMethodB() { }
-            // protected internal void MyProtectedInternalMethodA() { }
-            // protected internal void MyProtectedInternalMethodB() { }
-            // private protected static void MyPrivateProtectedStaticMethodA() { }
-            // private protected static void MyPrivateProtectedStaticMethodB() { }
-            // private protected void MyPrivateProtectedMethodA() { }
-            // private protected void MyPrivateProtectedMethodB() { }
-            // protected static void MyProtectedStaticMethodA() { }
-            // protected static void MyProtectedStaticMethodB() { }
-            // protected void MyProtectedMethodA() { }
-            // protected void MyProtectedMethodB() { }
             private static void MyPrivateStaticMethodA() { }
             private static void MyPrivateStaticMethodB() { }
             private void MyPrivateMethodA() { }
@@ -405,5 +341,899 @@ public class MemberOrderUnitTest_RecordStruct
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Constructors_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} MyRecordStruct(string a) { }
+                {{secondAccessModifier}} MyRecordStruct(int a) { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Constructors_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} MyRecordStruct(string a) { }
+                {{secondAccessModifier}} MyRecordStruct(int a) { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Constructors_StaticConstructorFirst_NoDiagnostics()
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                static MyRecordStruct() { }
+                public MyRecordStruct() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Constructors_StaticConstructorNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public MyRecordStruct() { }
+                static MyRecordStruct() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Delegates_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} delegate void Member2();
+                {{secondAccessModifier}} delegate void Member1();
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Delegates_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} delegate void Member1();
+                {{secondAccessModifier}} delegate void Member2();
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Delegates_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void Member1();
+                public delegate void Member2();
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Delegates_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void Member2();
+                public delegate void Member1();
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task EventFields_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member2;
+                {{secondAccessModifier}} event MemberDelegate Member1;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task EventFields_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member1;
+                {{secondAccessModifier}} event MemberDelegate Member2;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task EventFields_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1;
+                public event MemberDelegate Member2;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task EventFields_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member2;
+                public event MemberDelegate Member1;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task EventFields_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public static event MemberDelegate StaticMember1;
+                public event MemberDelegate Member1;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task EventFields_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1;
+                public static event MemberDelegate StaticMember1;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Events_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member2 { add { } remove { } }
+                {{secondAccessModifier}} event MemberDelegate Member1 { add { } remove { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Events_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member1 { add { } remove { } }
+                {{secondAccessModifier}} event MemberDelegate Member2 { add { } remove { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Events_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1 { add { } remove { } }
+                public event MemberDelegate Member2 { add { } remove { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Events_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member2 { add { } remove { } }
+                public event MemberDelegate Member1 { add { } remove { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Events_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public static event MemberDelegate StaticMember1 { add { } remove { } }
+                public event MemberDelegate Member1 { add { } remove { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Events_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1 { add { } remove { } }
+                public static event MemberDelegate StaticMember1 { add { } remove { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Fields_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} int Member2;
+                {{secondAccessModifier}} int Member1;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Fields_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} int Member1;
+                {{secondAccessModifier}} int Member2;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Fields_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public int Member1;
+                public int Member2;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Fields_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public int Member2;
+                public int Member1;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Fields_ConstGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public record struct MyRecordStruct
+            {
+                public const int ConstMember1 = 0;
+                public int Member1 = 0;
+                internal const int ConstMember2 = 0;
+                internal int Member2 = 0;
+
+                public MyRecordStruct() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DataRow("const", "static")]
+    [DataRow("const", "")]
+    [DataRow("static", "")]
+    public async Task Fields_KeywordsInOrder_NoDiagnostics(string firstKeyword, string secondKeyword)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public {{firstKeyword}} int Member2 = 0;
+                public {{secondKeyword}} int Member1 = 0;
+
+                public MyRecordStruct() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DataRow("static", "const")]
+    [DataRow("", "const")]
+    [DataRow("", "static")]
+    public async Task Fields_KeywordsNotInOrder_SingleDiagnostic(string firstKeyword, string secondKeyword)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public {{firstKeyword}} int Member1 = 0;
+                public {{secondKeyword}} int Member2 = 0;
+
+                public MyRecordStruct() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Fields_StaticGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public record struct MyRecordStruct
+            {
+                public static int StaticMember1 = 0;
+                public int Member1 = 0;
+                internal static int StaticMember2 = 0;
+                internal int Member2 = 0;
+
+                public MyRecordStruct() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Indexers_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} int this[int a] { get => 0; set { } }
+                {{secondAccessModifier}} int this[string a] { get => 0; set { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Indexers_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} int this[int a] { get => 0; set { } }
+                {{secondAccessModifier}} int this[string a] { get => 0; set { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Methods_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} void Method2() { }
+                {{secondAccessModifier}} void Method1() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Methods_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} void Method1() { }
+                {{secondAccessModifier}} void Method2() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Methods_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public void Method1() { }
+                public void Method2() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Methods_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public void Method2() { }
+                public void Method1() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Methods_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public static void Method2() { }
+                public void Method1() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Methods_StaticGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public record struct MyRecordStruct
+            {
+                public static void StaticMethod1() { }
+                public void Method1() { }
+                internal static void StaticMethod2() { }
+                internal void Method2() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Methods_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public void Method1() { }
+                public static void Method2() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersInOrder), typeof(TestData))]
+    public async Task Properties_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} int Member2 { get; set; }
+                {{secondAccessModifier}} int Member1 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.StructAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Properties_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                {{firstAccessModifier}} int Member1 { get; set; }
+                {{secondAccessModifier}} int Member2 { get; set; }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Properties_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public int Member1 { get; set; }
+                public int Member2 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Properties_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public int Member2 { get; set; }
+                public int Member1 { get; set; }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Properties_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public static int Member2 { get; set; }
+                public int Member1 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Properties_StaticGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public record struct MyRecordStruct
+            {
+                public static int StaticMember1 { get; set; }
+                public int Member1 { get; set; }
+                internal static int StaticMember2 { get; set; }
+                internal int Member2 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Properties_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public record struct MyRecordStruct
+            {
+                public int Member1 { get; set; }
+                public static int Member2 { get; set; }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyRecordStruct"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
     }
 }

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Treasure.Analyzers.MemberOrder.Tests.TestUtils;
+
 using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 
 [TestClass]
@@ -339,5 +341,789 @@ public class MemberOrderUnitTest_Interface
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task Delegates_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} delegate void Member2();
+                {{secondAccessModifier}} delegate void Member1();
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Delegates_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} delegate void Member1();
+                {{secondAccessModifier}} delegate void Member2();
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Delegates_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void Member1();
+                public delegate void Member2();
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Delegates_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void Member2();
+                public delegate void Member1();
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task EventFields_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member2;
+                {{secondAccessModifier}} event MemberDelegate Member1;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task EventFields_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member1;
+                {{secondAccessModifier}} event MemberDelegate Member2;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task EventFields_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1;
+                public event MemberDelegate Member2;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task EventFields_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member2;
+                public event MemberDelegate Member1;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task EventFields_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public static event MemberDelegate StaticMember1;
+                public event MemberDelegate Member1;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task EventFields_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1;
+                public static event MemberDelegate StaticMember1;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task Events_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member2 { add { } remove { } }
+                {{secondAccessModifier}} event MemberDelegate Member1 { add { } remove { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Events_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                {{firstAccessModifier}} event MemberDelegate Member1 { add { } remove { } }
+                {{secondAccessModifier}} event MemberDelegate Member2 { add { } remove { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Events_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1 { add { } remove { } }
+                public event MemberDelegate Member2 { add { } remove { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Events_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member2 { add { } remove { } }
+                public event MemberDelegate Member1 { add { } remove { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Events_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public static event MemberDelegate StaticMember1 { add { } remove { } }
+                public event MemberDelegate Member1 { add { } remove { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Events_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public delegate void MemberDelegate();
+                public event MemberDelegate Member1 { add { } remove { } }
+                public static event MemberDelegate StaticMember1 { add { } remove { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task Fields_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} const int Member2 = 0;
+                {{secondAccessModifier}} const int Member1 = 0;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Fields_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} const int Member1 = 0;
+                {{secondAccessModifier}} const int Member2 = 0;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Fields_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public const int Member1 = 0;
+                public const int Member2 = 0;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Fields_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public const int Member2 = 0;
+                public const int Member1 = 0;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DataRow("const", "static")]
+    public async Task Fields_KeywordsInOrder_NoDiagnostics(string firstKeyword, string secondKeyword)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                public {{firstKeyword}} int Member2 = 0;
+                public {{secondKeyword}} int Member1 = 0;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DataRow("static", "const")]
+    public async Task Fields_KeywordsNotInOrder_SingleDiagnostic(string firstKeyword, string secondKeyword)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                public {{firstKeyword}} int Member1 = 0;
+                public {{secondKeyword}} int Member2 = 0;
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Fields_KeywordsGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public interface MyInterface
+            {
+                public const int ConstMember1 = 0;
+                public static int StaticMember1 = 0;
+                internal const int ConstMember2 = 0;
+                internal static int StaticMember2 = 0;
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task Indexers_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} int this[int a] { get => 0; set { } }
+                {{secondAccessModifier}} int this[string a] { get => 0; set { } }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Indexers_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} int this[int a] { get => 0; set { } }
+                {{secondAccessModifier}} int this[string a] { get => 0; set { } }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task Methods_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} void Method2() { }
+                {{secondAccessModifier}} void Method1() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Methods_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} void Method1() { }
+                {{secondAccessModifier}} void Method2() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Methods_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public void Method1() { }
+                public void Method2() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Methods_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public void Method2() { }
+                public void Method1() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Methods_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public static void Method2() { }
+                public void Method1() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Methods_StaticGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public interface MyInterface
+            {
+                public static void StaticMethod1() { }
+                public void Method1() { }
+                internal static void StaticMethod2() { }
+                internal void Method2() { }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Methods_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public void Method1() { }
+                public static void Method2() { }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersInOrder), typeof(TestData))]
+    public async Task Properties_AccessModifiersInOrder_NoDiagnostics(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} int Member2 { get; set; }
+                {{secondAccessModifier}} int Member1 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(TestData.InterfaceAccessModifiersNotInOrder), typeof(TestData))]
+    public async Task Properties_AccessModifiersNotInOrder_SingleDiagnostic(string firstAccessModifier, string secondAccessModifier)
+    {
+        // Arrange
+        string sourceText = $$"""
+            public interface MyInterface
+            {
+                {{firstAccessModifier}} int Member1 { get; set; }
+                {{secondAccessModifier}} int Member2 { get; set; }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Properties_AlphabeticalInOrder_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public int Member1 { get; set; }
+                public int Member2 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Properties_AlphabeticalNotInOrder_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public int Member2 { get; set; }
+                public int Member1 { get; set; }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
+    }
+
+    [TestMethod]
+    public async Task Properties_StaticFirst_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public static int Member2 { get; set; }
+                public int Member1 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Properties_StaticGroupedByAccessibility_NoDiagnostics()
+    {
+        // Arrange
+        const string sourceText = """
+            public interface MyInterface
+            {
+                public static int StaticMember1 { get; set; }
+                public int Member1 { get; set; }
+                internal static int StaticMember2 { get; set; }
+                internal int Member2 { get; set; }
+            }
+            """;
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText);
+    }
+
+    [TestMethod]
+    public async Task Properties_StaticNotFirst_SingleDiagnostic()
+    {
+        // Arrange
+        const string sourceText = $$"""
+            public interface MyInterface
+            {
+                public int Member1 { get; set; }
+                public static int Member2 { get; set; }
+            }
+            """;
+
+        DiagnosticResult[] expectedDiagnosticResults = new[]
+        {
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 1, 1)
+                .WithArguments("MyInterface"),
+        };
+
+        // Act and assert
+        await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
     }
 }
