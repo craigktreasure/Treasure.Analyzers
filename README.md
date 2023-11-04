@@ -26,9 +26,10 @@ Improvements over CodeMaid:
   member ordering at build time.
 - The code fixups associated with the analyzer work anywhere Roslyn code fixups
   are supported: Visual Studio, Visual Studio Code, etc.. No extension required.
-- In addition to `class` and `struct`, the analyzer supports the newer `record`
-  and `record struct` declaration types as well.
-- Running code fixups will not remove newer C# keywords like `required`.
+- In addition to `interface`, `class`, and `struct`, the analyzer supports the
+  newer `record` and `record struct` declaration types as well.
+- Running code fixups will not remove newer C# keywords like `required`, which
+  happens today when reordering using CodeMaid.
 
 Limitations compared to CodeMaid:
 
