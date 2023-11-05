@@ -57,45 +57,49 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             return -1;
         }
 
+        // No modifiers, like for interfaces.
+        if (!member.Modifiers.Any())
+        {
+            return 0;
+        }
+
         // public
         if (member.Modifiers.Any(SyntaxKind.PublicKeyword))
         {
-            return 0;
+            return 1;
         }
 
         // internal
         else if (member.Modifiers.Any(SyntaxKind.InternalKeyword) && !member.Modifiers.Any(SyntaxKind.ProtectedKeyword))
         {
-            return 1;
+            return 2;
         }
 
         // protected internal
         else if (member.Modifiers.Any(SyntaxKind.ProtectedKeyword) && member.Modifiers.Any(SyntaxKind.InternalKeyword))
         {
-            return 2;
+            return 3;
         }
 
         // private protected
         else if (member.Modifiers.Any(SyntaxKind.PrivateKeyword) && member.Modifiers.Any(SyntaxKind.ProtectedKeyword))
         {
-            return 3;
+            return 4;
         }
 
         // protected
         else if (member.Modifiers.Any(SyntaxKind.ProtectedKeyword) && !member.Modifiers.Any(SyntaxKind.PrivateKeyword))
         {
-            return 4;
+            return 5;
         }
 
         // private
         else if (member.Modifiers.Any(SyntaxKind.PrivateKeyword))
         {
-            return 5;
+            return 6;
         }
-        else
-        {
-            return 99;
-        }
+
+        return 99;
     }
 
     /// <summary>
@@ -156,7 +160,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             DestructorDeclarationSyntax destructor => destructor.Identifier.Text,
             MethodDeclarationSyntax method => method.Identifier.Text,
             BaseTypeDeclarationSyntax type => type.Identifier.Text,
-            _ => throw new InvalidOperationException($"Unable to get member name: '{member}'"),
+            _ => throw new InvalidOperationException($"Unable to get member name: '{member}' ({member.GetType().Name})."),
         };
     }
 
@@ -209,14 +213,24 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+        foreach (SyntaxKind syntaxKind in new[]
+        {
+            SyntaxKind.ClassDeclaration,
+            SyntaxKind.InterfaceDeclaration,
+            SyntaxKind.RecordDeclaration,
+            SyntaxKind.RecordStructDeclaration,
+            SyntaxKind.StructDeclaration,
+        })
+        {
+            context.RegisterSyntaxNodeAction(AnalyzeNode, syntaxKind);
+        }
     }
 
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
-        ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)context.Node;
-        Location classLocation = classDeclaration.GetLocation();
-        SyntaxList<MemberDeclarationSyntax> members = classDeclaration.Members;
+        TypeDeclarationSyntax typeDeclaration = (TypeDeclarationSyntax)context.Node;
+        Location declarationLocation = typeDeclaration.GetLocation();
+        SyntaxList<MemberDeclarationSyntax> members = typeDeclaration.Members;
         List<MemberDeclarationSyntax> sortedMembers = members
             .OrderBy(GetMemberCategoryOrder)
             .ThenBy(GetAccessibilityModifierOrder)
@@ -230,7 +244,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             MemberDeclarationSyntax sortedMember = sortedMembers[i];
             if (sortedMember != member)
             {
-                Diagnostic diagnostic = Diagnostic.Create(Rule, classLocation, classDeclaration.Identifier.Text);
+                Diagnostic diagnostic = Diagnostic.Create(Rule, declarationLocation, typeDeclaration.Identifier.Text);
                 context.ReportDiagnostic(diagnostic);
                 break;
             }
