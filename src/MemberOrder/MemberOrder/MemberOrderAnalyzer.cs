@@ -231,12 +231,14 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
         TypeDeclarationSyntax typeDeclaration = (TypeDeclarationSyntax)context.Node;
         Location declarationLocation = typeDeclaration.GetLocation();
         SyntaxList<MemberDeclarationSyntax> members = typeDeclaration.Members;
-        List<MemberDeclarationSyntax> sortedMembers = members
+        List<MemberDeclarationSyntax> sortedMembers =
+        [
+            .. members
             .OrderBy(GetMemberCategoryOrder)
             .ThenBy(GetAccessibilityModifierOrder)
             .ThenBy(GetSpecialKeywordOrder)
             .ThenBy(GetMemberName)
-            .ToList();
+        ];
 
         for (int i = 0; i < members.Count; i++)
         {
