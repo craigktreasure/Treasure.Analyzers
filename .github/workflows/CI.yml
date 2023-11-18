@@ -1,4 +1,4 @@
-name: 'Treasure.Analyzers-CI'
+name: Treasure.Analyzers-CI
 
 on:
   push:
@@ -11,92 +11,21 @@ on:
       - 'docs/**'
       - 'README.md'
 
-env:
-  # Stop wasting time caching packages
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
 jobs:
-  build:
-    name: 'Build Treasure.Analyzers'
-    runs-on: ubuntu-latest
+  build_ci:
+    name: Build Treasure.Analyzers
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    uses: ./.github/workflows/workflow_build.yml
+    secrets: inherit
+    with:
+      # don't check format on CI builds due to common breaking changes in the .NET SDK
+      checkFormat: false
 
-    outputs:
-      package_version: ${{steps.version.outputs.package_version}}
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            7.x
-
-      - name: Set version
-        id: version
-        shell: pwsh
-        run: |
-          dotnet tool restore
-          $packageVersion = dotnet nbgv get-version --variable NuGetPackageVersion
-          "package_version=$packageVersion" >> $env:GITHUB_OUTPUT
-
-      - name: Install dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true
-        shell: pwsh
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          name: codecov
-          directory: __test-results
-          fail_ci_if_error: true
-          verbose: true
-
-      - name: Upload output artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: __output
-          path: __output
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: __packages
-          path: __packages
-
-  release_nuget:
-    name: 'Release Treasure.Analyzers to NuGet.org'
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: NuGet.org
-      url: https://www.nuget.org
-
-    env:
-      PACKAGE_VERSION: ${{ needs.build.outputs.package_version }}
-
+  release_ci:
+    name: Release Treasure.Analyzers to NuGet.org
+    needs: build_ci
     if: ${{ contains(github.event.head_commit.message, 'do release') }}
-
-    steps:
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1
-        with:
-          nuget-version: latest
-
-      - name: Download __packages
-        uses: actions/download-artifact@v3
-        with:
-          name: __packages
-          path: __packages
-
-      - name: Push ${{ env.PACKAGE_VERSION }} to NuGet.org
-        run: nuget push __packages/NuGet/Release/Treasure.Analyzers.*.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
+    uses: ./.github/workflows/workflow_release.yml
+    secrets: inherit
+    with:
+      package-version: ${{ needs.build_ci.outputs.package_version }}
