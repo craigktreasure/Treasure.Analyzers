@@ -142,12 +142,12 @@ public class MemberOrderUnitTests_Interface
         }
         """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -165,12 +165,12 @@ public class MemberOrderUnitTests_Interface
         }
         """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -188,12 +188,12 @@ public class MemberOrderUnitTests_Interface
         }
         """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -212,12 +212,12 @@ public class MemberOrderUnitTests_Interface
         }
         """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -236,12 +236,12 @@ public class MemberOrderUnitTests_Interface
         }
         """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -298,12 +298,12 @@ public class MemberOrderUnitTests_Interface
         }
         """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -373,12 +373,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -412,12 +412,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -455,12 +455,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -496,12 +496,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -537,12 +537,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -580,12 +580,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -621,12 +621,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -662,12 +662,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -703,12 +703,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -742,12 +742,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -783,12 +783,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -842,12 +842,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -883,12 +883,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -922,12 +922,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -979,12 +979,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -1020,12 +1020,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -1059,12 +1059,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);
@@ -1116,12 +1116,12 @@ public class MemberOrderUnitTests_Interface
             }
             """;
 
-        DiagnosticResult[] expectedDiagnosticResults = new[]
-        {
+        DiagnosticResult[] expectedDiagnosticResults =
+        [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
                 .WithLocation(string.Empty, 1, 1)
                 .WithArguments("MyInterface"),
-        };
+        ];
 
         // Act and assert
         await VerifyCS.VerifyAnalyzerAsync(sourceText, expectedDiagnosticResults);

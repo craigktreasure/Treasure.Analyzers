@@ -72,12 +72,14 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
     private static async Task<Document> ReorderMembersAsync(Document document, TypeDeclarationSyntax declaration, CancellationToken cancellationToken)
     {
         SyntaxList<MemberDeclarationSyntax> members = declaration.Members;
-        List<MemberDeclarationSyntax> sortedMembers = members
+        List<MemberDeclarationSyntax> sortedMembers =
+        [
+            .. members
             .OrderBy(MemberOrderAnalyzer.GetMemberCategoryOrder)
             .ThenBy(MemberOrderAnalyzer.GetAccessibilityModifierOrder)
             .ThenBy(MemberOrderAnalyzer.GetSpecialKeywordOrder)
             .ThenBy(MemberOrderAnalyzer.GetMemberName)
-            .ToList();
+        ];
         TryKeepWhiteSpace(ref members, sortedMembers);
         TypeDeclarationSyntax newDeclaration = declaration.WithMembers(SyntaxFactory.List(sortedMembers));
 

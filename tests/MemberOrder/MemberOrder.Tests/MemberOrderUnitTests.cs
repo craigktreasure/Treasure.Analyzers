@@ -107,7 +107,7 @@ public sealed class MemberOrderUnitTests
 
     private sealed class MockAnalysisContext : AnalysisContext
     {
-        public List<SyntaxKind> RegisteredSyntaxKinds { get; } = new();
+        public List<SyntaxKind> RegisteredSyntaxKinds { get; } = [];
 
         public override void ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags analysisMode) { }
 
