@@ -13,9 +13,9 @@
 
   <ItemGroup>
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers"                  Version="3.3.4" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp"                     Version="4.8.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces"          Version="4.8.0" />
-    <PackageVersion Include="Microsoft.VSSDK.BuildTools"                        Version="17.8.2365" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp"                     Version="4.9.2" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces"          Version="4.9.2" />
+    <PackageVersion Include="Microsoft.VSSDK.BuildTools"                        Version="17.9.3168" />
     <PackageVersion Include="Treasure.Utils.Argument"                           Version="1.1.0" />
   </ItemGroup>
 

@@ -37,7 +37,7 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     /// <summary>
     /// Gets the supported diagnostics.
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [Rule];
 
     /// <summary>
     /// Gets the accessibility modifier.
