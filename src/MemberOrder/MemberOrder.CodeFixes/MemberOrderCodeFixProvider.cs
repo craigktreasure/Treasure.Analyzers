@@ -25,7 +25,7 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
     /// <summary>
     /// A list of diagnostic IDs that this provider can provide fixes for.
     /// </summary>
-    public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MemberOrderAnalyzer.DiagnosticId);
+    public sealed override ImmutableArray<string> FixableDiagnosticIds => [MemberOrderAnalyzer.DiagnosticId];
 
     /// <summary>
     /// Gets an optional <see cref="FixAllProvider" /> that can fix all/multiple occurrences of diagnostics fixed by this code fix provider.
