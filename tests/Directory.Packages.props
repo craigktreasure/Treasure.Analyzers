@@ -3,8 +3,8 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
 
   <ItemGroup>
-    <PackageVersion Include="coverlet.collector"                                Version="6.0.1" />
-    <PackageVersion Include="coverlet.msbuild"                                  Version="6.0.1" />
+    <PackageVersion Include="coverlet.collector"                                Version="6.0.2" />
+    <PackageVersion Include="coverlet.msbuild"                                  Version="6.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk"                            Version="17.9.0" />
     <PackageVersion Include="MSTest.TestAdapter"                                Version="3.2.2" />
     <PackageVersion Include="MSTest.TestFramework"                              Version="3.2.2" />
