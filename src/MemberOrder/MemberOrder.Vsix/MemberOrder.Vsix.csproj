@@ -19,6 +19,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--
+      This dependency is a workaround for the fact that the version required
+      by Microsoft.VSSDK.BuildTools (17.7.20) no longer exists.
+    -->
+    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" PrivateAssets="all" />
   </ItemGroup>
 
