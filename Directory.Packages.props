@@ -41,7 +41,7 @@
     <PackageVersion Include="MSTest.TestAdapter"                                Version="3.4.3" />
     <PackageVersion Include="MSTest.TestFramework"                              Version="3.4.3" />
     <PackageVersion Include="Microsoft.CodeAnalysis"                            Version="4.10.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest" Version="1.1.1" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest" Version="1.1.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest"  Version="1.1.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing.MSTest" Version="1.1.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Analyzer.Testing.MSTest"   Version="1.1.1" />
