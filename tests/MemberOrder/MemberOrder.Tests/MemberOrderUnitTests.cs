@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
+using VerifyCS = TestVerifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 
 [TestClass]
 public sealed class MemberOrderUnitTests

@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Treasure.Analyzers.MemberOrder.Tests.TestUtils;
 
-using VerifyCS = Test.Verifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
+using VerifyCS = TestVerifiers.CSharpAnalyzerVerifier<MemberOrderAnalyzer>;
 
 [TestClass]
 public class MemberOrderUnitTests_Class

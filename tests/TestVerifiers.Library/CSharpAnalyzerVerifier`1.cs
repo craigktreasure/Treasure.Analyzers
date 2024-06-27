@@ -1,4 +1,4 @@
-﻿namespace Treasure.Analyzers.MemberOrder.Test.Verifiers;
+﻿namespace Treasure.Analyzers.TestVerifiers;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -8,33 +8,49 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
-[SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "<Pending>")]
-public static partial class CSharpAnalyzerVerifier<TAnalyzer>
+[SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
+public static class CSharpAnalyzerVerifier<TAnalyzer>
     where TAnalyzer : DiagnosticAnalyzer, new()
 {
     /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.Diagnostic()"/>
     public static DiagnosticResult Diagnostic()
-        => CSharpAnalyzerVerifier<TAnalyzer, MSTestVerifier>.Diagnostic();
+        => CSharpAnalyzerVerifier<TAnalyzer, DefaultVerifier>.Diagnostic();
 
     /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.Diagnostic(string)"/>
     public static DiagnosticResult Diagnostic(string diagnosticId)
-        => CSharpAnalyzerVerifier<TAnalyzer, MSTestVerifier>.Diagnostic(diagnosticId);
+        => CSharpAnalyzerVerifier<TAnalyzer, DefaultVerifier>.Diagnostic(diagnosticId);
 
     /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.Diagnostic(DiagnosticDescriptor)"/>
     public static DiagnosticResult Diagnostic(DiagnosticDescriptor descriptor)
-        => CSharpAnalyzerVerifier<TAnalyzer, MSTestVerifier>.Diagnostic(descriptor);
+        => CSharpAnalyzerVerifier<TAnalyzer, DefaultVerifier>.Diagnostic(descriptor);
 
     /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.VerifyAnalyzerAsync(string, DiagnosticResult[])"/>
     public static async Task VerifyAnalyzerAsync(string source, params DiagnosticResult[] expected)
     {
-        CSharpAnalyzerVerifier<TAnalyzer>.Test test = new()
+        Test test = new()
         {
             TestCode = source,
         };
 
         test.ExpectedDiagnostics.AddRange(expected);
         await test.RunAsync(CancellationToken.None);
+    }
+
+    internal sealed class Test : CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
+    {
+        public Test()
+        {
+            this.SolutionTransforms.Add((solution, projectId) =>
+            {
+                CompilationOptions? compilationOptions = solution.GetProject(projectId)?.CompilationOptions
+                    ?? throw new InvalidOperationException("Unable to get project compilation options.");
+                compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
+                    compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
+                solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
+
+                return solution;
+            });
+        }
     }
 }
