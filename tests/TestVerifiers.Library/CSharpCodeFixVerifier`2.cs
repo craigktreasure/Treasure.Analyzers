@@ -1,4 +1,4 @@
-﻿namespace Treasure.Analyzers.MemberOrder.Test.Verifiers;
+﻿namespace Treasure.Analyzers.TestVerifiers;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
@@ -9,8 +9,6 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-
-using Treasure.Analyzers.TestVerifiers;
 
 [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
 public static class CSharpCodeFixVerifier<TAnalyzer, TCodeFix>

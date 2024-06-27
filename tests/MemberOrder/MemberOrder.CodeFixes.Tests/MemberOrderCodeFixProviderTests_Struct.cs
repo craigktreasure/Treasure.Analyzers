@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using VerifyCS = Test.Verifiers.CSharpCodeFixVerifier<
+using VerifyCS = TestVerifiers.CSharpCodeFixVerifier<
     MemberOrderAnalyzer,
     MemberOrderCodeFixProvider>;
 
