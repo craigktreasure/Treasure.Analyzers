@@ -22,6 +22,10 @@ updates:
     Microsoft.CodeAnalysis:
       patterns:
       - "Microsoft.CodeAnalysis*"
+    gitversioning:
+      patterns:
+      - "Nerdbank.GitVersioning"
+      - "nbgv"
 
 - package-ecosystem: github-actions
   directory: "/"
