@@ -13,7 +13,7 @@
     https://learn.microsoft.com/nuget/consume-packages/central-package-management#global-package-references
     -->
   <ItemGroup>
-    <GlobalPackageReference Include="Microsoft.Build.CopyOnWrite" Version="1.0.315" />
+    <GlobalPackageReference Include="Microsoft.Build.CopyOnWrite" Version="1.0.322" />
   </ItemGroup>
 
   <!--
