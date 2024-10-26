@@ -30,7 +30,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp"                     Version="4.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces"          Version="4.11.0" />
     <PackageVersion Include="Microsoft.VisualStudio.SDK.Analyzers"              Version="17.7.47" />
-    <PackageVersion Include="Microsoft.VSSDK.BuildTools"                        Version="17.11.435" />
+    <PackageVersion Include="Microsoft.VSSDK.BuildTools"                        Version="17.12.2069" />
     <PackageVersion Include="Treasure.Utils.Argument"                           Version="1.1.0" />
   </ItemGroup>
 
