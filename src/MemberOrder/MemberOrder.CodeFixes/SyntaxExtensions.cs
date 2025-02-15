@@ -23,8 +23,8 @@ internal static class SyntaxExtensions
 
     public static MemberDeclarationSyntax WithLeadingWhitespaceFrom(this MemberDeclarationSyntax targetMember, MemberDeclarationSyntax whitespaceSourceMember)
     {
-        IEnumerable<SyntaxTrivia> newLeadingWhitespace = whitespaceSourceMember.GetLeadingTrivia().GetLeadingWhitespace().ToArray();
-        IEnumerable<SyntaxTrivia> leadingNonWhitespace = targetMember.GetLeadingTrivia().WithoutLeadingWhitespace().ToArray();
+        IEnumerable<SyntaxTrivia> newLeadingWhitespace = [.. whitespaceSourceMember.GetLeadingTrivia().GetLeadingWhitespace()];
+        IEnumerable<SyntaxTrivia> leadingNonWhitespace = [.. targetMember.GetLeadingTrivia().WithoutLeadingWhitespace()];
         return targetMember.WithLeadingTrivia(newLeadingWhitespace.Concat(leadingNonWhitespace));
     }
 
