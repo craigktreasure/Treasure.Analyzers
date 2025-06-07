@@ -8,10 +8,6 @@ updates:
     time: '17:00'
     timezone: 'America/Los_Angeles'
   open-pull-requests-limit: 10
-  reviewers:
-    - craigktreasure
-  assignees:
-    - craigktreasure
   groups:
     coverlet:
       patterns:
@@ -33,6 +29,7 @@ updates:
     interval: 'weekly'
     day: 'tuesday'
     time: '22:00'
+    timezone: 'America/Los_Angeles'
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -42,7 +39,3 @@ updates:
     time: '17:00'
     timezone: 'America/Los_Angeles'
   open-pull-requests-limit: 10
-  reviewers:
-    - craigktreasure
-  assignees:
-    - craigktreasure
