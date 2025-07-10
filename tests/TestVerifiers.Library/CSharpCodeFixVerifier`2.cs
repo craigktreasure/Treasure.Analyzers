@@ -60,6 +60,27 @@ public static class CSharpCodeFixVerifier<TAnalyzer, TCodeFix>
         await test.RunAsync(CancellationToken.None);
     }
 
+    /// <summary>
+    /// Verifies that the analyzer will produce the specified diagnostics and that the code fix will fix the code.
+    /// </summary>
+    /// <param name="source">The source text to test</param>
+    /// <param name="expected">The expected diagnostic results</param>
+    /// <param name="fixedSource">The expected fixed source text</param>
+    /// <param name="numberOfFixAllIterations">The number of fix-all iterations expected</param>
+    /// <returns>A task representing the asynchronous operation</returns>
+    public static async Task VerifyCodeFixAsync(string source, DiagnosticResult[] expected, string fixedSource, int numberOfFixAllIterations)
+    {
+        Test test = new()
+        {
+            TestCode = source,
+            FixedCode = fixedSource,
+            NumberOfFixAllIterations = numberOfFixAllIterations,
+        };
+
+        test.ExpectedDiagnostics.AddRange(expected);
+        await test.RunAsync(CancellationToken.None);
+    }
+
     internal sealed class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
     {
         public Test()
