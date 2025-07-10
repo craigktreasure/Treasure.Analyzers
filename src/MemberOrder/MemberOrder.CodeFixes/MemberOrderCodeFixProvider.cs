@@ -57,7 +57,7 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
                 .FindToken(diagnosticSpan.Start)
                 .Parent?.AncestorsAndSelf()
                 .OfType<TypeDeclarationSyntax>()
-                .Single()
+                .First()
                 ?? throw new InvalidOperationException("The type declaration was null.");
 
             context.RegisterCodeFix(
