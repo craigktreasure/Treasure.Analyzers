@@ -37,6 +37,10 @@ Limitations compared to CodeMaid:
 - The analyzer does not support code regions: `#region MyRegion`.
 - Likely others.
 
+## Contributing
+
+For information about the release process, see the [Release Process documentation](./docs/Release-Process.md).
+
 [ci]: https://github.com/craigktreasure/Treasure.Analyzers/actions/workflows/CI.yml "CI"
 [codecov]: https://codecov.io/gh/craigktreasure/Treasure.Analyzers "Treasure.Analyzers codecov"
 [codemaid]: https://www.codemaid.net/ "CodeMaid"
