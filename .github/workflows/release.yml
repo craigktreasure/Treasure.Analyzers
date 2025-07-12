@@ -120,11 +120,6 @@ jobs:
           run-id: ${{ needs.find_build.outputs.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v2
-        with:
-          nuget-version: latest
-
       - name: Display package info
         run: |
           echo "📦 Packages to be released:"
@@ -144,7 +139,7 @@ jobs:
       - name: Push to NuGet.org
         run: |
           echo "🚀 Pushing $PACKAGE_VERSION to NuGet.org..."
-          nuget push __artifacts/package/release/Treasure.Analyzers.*.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
+          dotnet nuget push __artifacts/package/release/Treasure.Analyzers.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
           echo "✅ Successfully released $PACKAGE_VERSION to NuGet.org"
 
       - name: Create release summary
