@@ -59,40 +59,38 @@ jobs:
             console.log(`Found latest successful CI run: ${latestRun.id} from ${latestRun.created_at}`);
             core.setOutput('run_id', latestRun.id.toString());
 
-      - name: Get package version from build
+      - name: Validate CI run
         id: get_version
         uses: actions/github-script@v7
         with:
           script: |
             const runId = '${{ steps.find_run.outputs.run_id }}';
 
-            // Get the workflow run details
+            // Get the workflow run details to validate it's a successful CI run
             const { data: run } = await github.rest.actions.getWorkflowRun({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: runId
             });
 
-            // Get jobs for this run
-            const { data: jobs } = await github.rest.actions.listJobsForWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: runId
-            });
+            console.log(`Validating CI run: ${run.id}`);
+            console.log(`- Workflow: ${run.name}`);
+            console.log(`- Status: ${run.status}`);
+            console.log(`- Conclusion: ${run.conclusion}`);
+            console.log(`- Created: ${run.created_at}`);
 
-            // Find the build job
-            const buildJob = jobs.jobs.find(job => job.name === 'Build Treasure.Analyzers');
-            if (!buildJob) {
-              core.setFailed('Could not find build job in the specified run');
+            if (run.conclusion !== 'success') {
+              core.setFailed(`CI run ${runId} was not successful (conclusion: ${run.conclusion})`);
               return;
             }
 
-            // The package version should be available as an output from the build job
-            // For now, we'll extract it from the run's display title or use a placeholder
-            console.log(`Build job found: ${buildJob.name} (${buildJob.conclusion})`);
+            if (run.name !== 'Treasure.Analyzers-CI') {
+              core.setFailed(`Run ${runId} is not a CI workflow run (found: ${run.name})`);
+              return;
+            }
 
-            // Note: GitHub Actions doesn't provide easy access to job outputs from other runs
-            // The version will be determined when we download the artifacts
+            console.log('✅ CI run validation passed');
+            // Package version will be determined from artifacts
             core.setOutput('package_version', 'TBD');
 
   release:

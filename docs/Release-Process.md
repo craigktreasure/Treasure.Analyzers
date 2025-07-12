@@ -87,10 +87,12 @@ The release process has been separated from the CI build process to provide bett
 
 ## Migration from Old Process
 
-The old process required including "do release" in commit messages. This is no longer needed:
+The old process required including "do release" in commit messages and used a separate `workflow_release.yml` file. This is no longer needed:
 
-- ❌ **Old**: Commit with "do release" in message → automatic release
-- ✅ **New**: Commit normally → manual release when ready
+- ❌ **Old**: Commit with "do release" in message → automatic release via `workflow_release.yml`
+- ✅ **New**: Commit normally → manual release when ready via the consolidated `release.yml` workflow
+
+The `workflow_release.yml` file has been removed as all release logic is now consolidated into the manual release workflow.
 
 ## Benefits
 
