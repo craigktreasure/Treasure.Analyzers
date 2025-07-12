@@ -1,0 +1,180 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'CI Run ID to release (leave empty for latest successful build)'
+        required: false
+        type: string
+      confirm_release:
+        description: 'Confirm you want to release to NuGet.org'
+        required: true
+        type: boolean
+        default: false
+      release_notes:
+        description: 'Release notes (optional)'
+        required: false
+        type: string
+
+jobs:
+  find_build:
+    name: Find Build to Release
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.find_run.outputs.run_id }}
+      package_version: ${{ steps.get_version.outputs.package_version }}
+
+    steps:
+      - name: Find CI run to release
+        id: find_run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runId = '${{ inputs.run_id }}';
+
+            if (runId) {
+              // Use the specified run ID
+              console.log(`Using specified run ID: ${runId}`);
+              core.setOutput('run_id', runId);
+              return;
+            }
+
+            // Find the latest successful CI run
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'CI.yml',
+              status: 'completed',
+              conclusion: 'success',
+              per_page: 1
+            });
+
+            if (runs.total_count === 0) {
+              core.setFailed('No successful CI runs found');
+              return;
+            }
+
+            const latestRun = runs.workflow_runs[0];
+            console.log(`Found latest successful CI run: ${latestRun.id} from ${latestRun.created_at}`);
+            core.setOutput('run_id', latestRun.id.toString());
+
+      - name: Get package version from build
+        id: get_version
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runId = '${{ steps.find_run.outputs.run_id }}';
+
+            // Get the workflow run details
+            const { data: run } = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId
+            });
+
+            // Get jobs for this run
+            const { data: jobs } = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId
+            });
+
+            // Find the build job
+            const buildJob = jobs.jobs.find(job => job.name === 'Build Treasure.Analyzers');
+            if (!buildJob) {
+              core.setFailed('Could not find build job in the specified run');
+              return;
+            }
+
+            // The package version should be available as an output from the build job
+            // For now, we'll extract it from the run's display title or use a placeholder
+            console.log(`Build job found: ${buildJob.name} (${buildJob.conclusion})`);
+
+            // Note: GitHub Actions doesn't provide easy access to job outputs from other runs
+            // The version will be determined when we download the artifacts
+            core.setOutput('package_version', 'TBD');
+
+  release:
+    name: Release to NuGet.org
+    needs: find_build
+    if: ${{ inputs.confirm_release == true }}
+    runs-on: ubuntu-latest
+    environment:
+      name: NuGet.org
+      url: https://www.nuget.org
+
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ "${{ inputs.confirm_release }}" != "true" ]; then
+            echo "❌ Release not confirmed. Please check the confirmation box to proceed."
+            exit 1
+          fi
+          echo "✅ Release confirmed"
+          echo "📦 Releasing build from run ID: ${{ needs.find_build.outputs.run_id }}"
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: packages_ubuntu
+          path: __artifacts/package
+          run-id: ${{ needs.find_build.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+        with:
+          nuget-version: latest
+
+      - name: Display package info
+        run: |
+          echo "📦 Packages to be released:"
+          ls -la __artifacts/package/release/
+
+          # Extract version from package filename
+          PACKAGE_FILE=$(ls __artifacts/package/release/Treasure.Analyzers.*.nupkg | head -1)
+          if [ -n "$PACKAGE_FILE" ]; then
+            PACKAGE_VERSION=$(basename "$PACKAGE_FILE" .nupkg | sed 's/Treasure.Analyzers.//')
+            echo "📋 Package version: $PACKAGE_VERSION"
+            echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          else
+            echo "❌ No package files found"
+            exit 1
+          fi
+
+      - name: Push to NuGet.org
+        run: |
+          echo "🚀 Pushing $PACKAGE_VERSION to NuGet.org..."
+          nuget push __artifacts/package/release/Treasure.Analyzers.*.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
+          echo "✅ Successfully released $PACKAGE_VERSION to NuGet.org"
+
+      - name: Create release summary
+        run: |
+          echo "## 🎉 Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package**: Treasure.Analyzers" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: $PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- **Source Build**: Run #${{ needs.find_build.outputs.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Released to**: NuGet.org" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ inputs.release_notes }}" ]; then
+            echo "- **Release Notes**: ${{ inputs.release_notes }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View on NuGet.org](https://www.nuget.org/packages/Treasure.Analyzers/$PACKAGE_VERSION)" >> $GITHUB_STEP_SUMMARY
+
+  release_cancelled:
+    name: Release Cancelled
+    needs: find_build
+    if: ${{ inputs.confirm_release != true }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Release not confirmed
+        run: |
+          echo "❌ Release was not confirmed."
+          echo "To proceed with the release, please:"
+          echo "1. Re-run this workflow"
+          echo "2. Check the 'Confirm you want to release to NuGet.org' checkbox"
+          echo ""
+          echo "Build that would have been released: Run #${{ needs.find_build.outputs.run_id }}"
+          exit 1
