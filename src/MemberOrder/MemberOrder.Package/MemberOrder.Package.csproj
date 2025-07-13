@@ -14,7 +14,6 @@
     <Description>An analyzer and code fixer used to keep members in a specific order.</Description>
     <PackageTags>Treasure, MemberOrder, analyzers</PackageTags>
     <DevelopmentDependency>true</DevelopmentDependency>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
 
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
