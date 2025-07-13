@@ -176,7 +176,7 @@ public class MemberOrderUnitTests_Class
     }
 
     [TestMethod]
-    public async Task Category_ConstructorBeforeIndexer_SingleDiagnostic()
+    public async Task Category_ConstructorBeforeIndexer_MultipleDiagnostics()
     {
         // Arrange
         const string sourceText = """
@@ -190,8 +190,11 @@ public class MemberOrderUnitTests_Class
         DiagnosticResult[] expectedDiagnosticResults =
         [
             VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
-                .WithLocation(string.Empty, 1, 1)
+                .WithLocation(string.Empty, 3, 12)
                 .WithArguments("MyClass"),
+            VerifyCS.Diagnostic(MemberOrderAnalyzer.DiagnosticId)
+                .WithLocation(string.Empty, 4, 16)
+                .WithArguments(""),
         ];
 
         // Act and assert

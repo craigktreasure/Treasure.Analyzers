@@ -68,5 +68,14 @@ namespace Treasure.Analyzers.MemberOrder.CodeFixes {
                 return ResourceManager.GetString("Treasure0001CodeFixTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reposition member '{0}'.
+        /// </summary>
+        internal static string Treasure0001CodeFixTitleIndividual {
+            get {
+                return ResourceManager.GetString("Treasure0001CodeFixTitleIndividual", resourceCulture);
+            }
+        }
     }
 }

@@ -122,7 +122,7 @@
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="Treasure0001AnalyzerMessageFormat" xml:space="preserve">
-    <value>Members of the '{0}' type should be ordered by type, accessibility level, keyword, and name</value>
+    <value>Member '{0}' should be repositioned according to the ordering rules (type, accessibility level, keyword, and name)</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="Treasure0001AnalyzerTitle" xml:space="preserve">

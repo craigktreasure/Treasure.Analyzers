@@ -229,7 +229,6 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
     private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         TypeDeclarationSyntax typeDeclaration = (TypeDeclarationSyntax)context.Node;
-        Location declarationLocation = typeDeclaration.GetLocation();
         SyntaxList<MemberDeclarationSyntax> members = typeDeclaration.Members;
         List<MemberDeclarationSyntax> sortedMembers =
         [
@@ -246,10 +245,39 @@ public class MemberOrderAnalyzer : DiagnosticAnalyzer
             MemberDeclarationSyntax sortedMember = sortedMembers[i];
             if (sortedMember != member)
             {
-                Diagnostic diagnostic = Diagnostic.Create(Rule, declarationLocation, typeDeclaration.Identifier.Text);
+                // Report diagnostic on the specific out-of-order member
+                Location memberLocation = GetMemberLocation(member);
+                string memberName = GetMemberName(member);
+                Diagnostic diagnostic = Diagnostic.Create(Rule, memberLocation, memberName);
                 context.ReportDiagnostic(diagnostic);
-                break;
             }
         }
+    }
+
+    /// <summary>
+    /// Gets the location for diagnostic reporting on a member.
+    /// </summary>
+    /// <param name="member">The member.</param>
+    /// <returns><see cref="Location"/>.</returns>
+    private static Location GetMemberLocation(MemberDeclarationSyntax member)
+    {
+        if (member is null)
+        {
+            throw new ArgumentNullException(nameof(member));
+        }
+
+        return member switch
+        {
+            BaseFieldDeclarationSyntax field => field.Declaration.Variables.First().Identifier.GetLocation(),
+            PropertyDeclarationSyntax property => property.Identifier.GetLocation(),
+            DelegateDeclarationSyntax @delegate => @delegate.Identifier.GetLocation(),
+            EventDeclarationSyntax @event => @event.Identifier.GetLocation(),
+            IndexerDeclarationSyntax indexer => indexer.ThisKeyword.GetLocation(),
+            ConstructorDeclarationSyntax constructor => constructor.Identifier.GetLocation(),
+            DestructorDeclarationSyntax destructor => destructor.Identifier.GetLocation(),
+            MethodDeclarationSyntax method => method.Identifier.GetLocation(),
+            BaseTypeDeclarationSyntax type => type.Identifier.GetLocation(),
+            _ => member.GetLocation(),
+        };
     }
 }

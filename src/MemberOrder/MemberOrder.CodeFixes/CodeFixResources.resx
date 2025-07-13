@@ -121,4 +121,8 @@
     <value>Reorder members</value>
     <comment>The title of the code fix.</comment>
   </data>
+  <data name="Treasure0001CodeFixTitleIndividual" xml:space="preserve">
+    <value>Reposition member '{0}'</value>
+    <comment>The title of the code fix for individual member repositioning.</comment>
+  </data>
 </root>

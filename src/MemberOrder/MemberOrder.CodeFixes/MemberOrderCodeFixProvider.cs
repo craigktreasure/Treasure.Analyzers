@@ -2,6 +2,7 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,6 +54,14 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         foreach (Diagnostic diagnostic in context.Diagnostics)
         {
             TextSpan diagnosticSpan = diagnostic.Location.SourceSpan;
+
+            // Find the specific member that has the diagnostic
+            MemberDeclarationSyntax? targetMember = root
+                .FindToken(diagnosticSpan.Start)
+                .Parent?.AncestorsAndSelf()
+                .OfType<MemberDeclarationSyntax>()
+                .FirstOrDefault();
+
             TypeDeclarationSyntax declaration = root
                 .FindToken(diagnosticSpan.Start)
                 .Parent?.AncestorsAndSelf()
@@ -60,6 +69,19 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
                 .First()
                 ?? throw new InvalidOperationException("The type declaration was null.");
 
+            // Individual member fix - reposition just this member
+            if (targetMember != null)
+            {
+                string memberName = MemberOrderAnalyzer.GetMemberName(targetMember);
+                context.RegisterCodeFix(
+                    CodeAction.Create(
+                        title: string.Format(CultureInfo.InvariantCulture, CodeFixResources.Treasure0001CodeFixTitleIndividual, memberName),
+                        createChangedDocument: c => RepositionMemberAsync(context.Document, declaration, targetMember, c),
+                        equivalenceKey: $"Individual_{memberName}"),
+                    diagnostic);
+            }
+
+            // Whole-type fix - reorder all members
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: CodeFixResources.Treasure0001CodeFixTitle,
@@ -82,6 +104,54 @@ public class MemberOrderCodeFixProvider : CodeFixProvider
         ];
         TryKeepWhiteSpace(ref members, sortedMembers);
         TypeDeclarationSyntax newDeclaration = declaration.WithMembers(SyntaxFactory.List(sortedMembers));
+
+        SyntaxNode? root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false)
+            ?? throw new InvalidOperationException("The root value was null.");
+        SyntaxNode newRoot = root.ReplaceNode(declaration, newDeclaration);
+
+        return document.WithSyntaxRoot(newRoot);
+    }
+
+    private static async Task<Document> RepositionMemberAsync(Document document, TypeDeclarationSyntax declaration, MemberDeclarationSyntax targetMember, CancellationToken cancellationToken)
+    {
+        SyntaxList<MemberDeclarationSyntax> members = declaration.Members;
+        List<MemberDeclarationSyntax> sortedMembers =
+        [
+            .. members
+            .OrderBy(MemberOrderAnalyzer.GetMemberCategoryOrder)
+            .ThenBy(MemberOrderAnalyzer.GetAccessibilityModifierOrder)
+            .ThenBy(MemberOrderAnalyzer.GetSpecialKeywordOrder)
+            .ThenBy(MemberOrderAnalyzer.GetMemberName)
+        ];
+
+        // Find the correct position for the target member
+        int targetIndex = sortedMembers.IndexOf(targetMember);
+        if (targetIndex == -1)
+        {
+            // Member not found in sorted list, fallback to full reorder
+            return await ReorderMembersAsync(document, declaration, cancellationToken);
+        }
+
+        // Create a new members list with the target member moved to correct position
+        List<MemberDeclarationSyntax> newMembers = [.. members];
+
+        // Remove the target member from its current position
+        newMembers.Remove(targetMember);
+
+        // Insert it at the correct position
+        // Adjust target index if we're inserting after removing
+        int adjustedTargetIndex = targetIndex;
+        int originalIndex = members.IndexOf(targetMember);
+        if (originalIndex < targetIndex)
+        {
+            adjustedTargetIndex--;
+        }
+
+        // Ensure we don't go out of bounds
+        adjustedTargetIndex = Math.Max(0, Math.Min(adjustedTargetIndex, newMembers.Count));
+        newMembers.Insert(adjustedTargetIndex, targetMember);
+
+        TypeDeclarationSyntax newDeclaration = declaration.WithMembers(SyntaxFactory.List(newMembers));
 
         SyntaxNode? root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false)
             ?? throw new InvalidOperationException("The root value was null.");
