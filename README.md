@@ -11,8 +11,9 @@ This repository contains my common analyzers. See the supported [rules][rules].
 [![NuGet](https://img.shields.io/nuget/dt/Treasure.Analyzers.MemberOrder)][memberorder-package]
 
 An analyzer that ensures that class members are ordered by type, keyword,
-accessibility level, and then by name. It also includes a code fix to reorder
-members appropriately.
+accessibility level, and then by name. It includes code fixes to reorder
+members appropriately, with enhanced member-level diagnostics for precise
+guidance on which specific members need repositioning.
 
 ### CodeMaid comparison
 
@@ -30,6 +31,8 @@ Improvements over CodeMaid:
   newer `record` and `record struct` declaration types as well.
 - Running code fixups will not remove newer C# keywords like `required`, which
   happens today when reordering using CodeMaid.
+- **Enhanced diagnostics**: Reports on individual out-of-order members with both
+  targeted fixes (single member repositioning) and comprehensive fixes (all members).
 
 Limitations compared to CodeMaid:
 

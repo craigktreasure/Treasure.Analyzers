@@ -10,7 +10,12 @@ Members contained in an object are not organized by type, keyword, accessibility
 
 To fix a violation of this rule, order the members by type, keyword, accessibility level, and name.
 
-You can also use the "Reorder members" code fixer:
+**Enhanced member-level diagnostics**: Starting with version 0.4.0, the analyzer now reports diagnostics on individual out-of-order members instead of the entire type. This provides more precise guidance on which specific members need to be repositioned.
+
+You can use the code fixers to resolve violations:
+
+- **"Reposition member 'memberName'"**: Moves just the specific member to its correct position
+- **"Reorder members"**: Reorders all members in the type (preserves existing workflow)
 
 ![Treasure0001 Code Fixer](assets/Treasure0001Demo.gif)
 
