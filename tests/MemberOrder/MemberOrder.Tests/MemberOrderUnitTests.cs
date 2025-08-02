@@ -23,7 +23,7 @@ public sealed class MemberOrderUnitTests
     [TestMethod]
     public void GetAccessibilityModifierOrder_NullMember_ThrowsArgumentNullException() =>
         // Act and assert
-        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetAccessibilityModifierOrder(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => MemberOrderAnalyzer.GetAccessibilityModifierOrder(null!));
 
     [TestMethod]
     public void GetAccessibilityModifierOrder_UnexpectedModifiers_Returns99()
@@ -42,7 +42,7 @@ public sealed class MemberOrderUnitTests
     [TestMethod]
     public void GetMemberCategoryOrder_NullMember_ThrowsArgumentNullException() =>
         // Act and assert
-        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberCategoryOrder(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberCategoryOrder(null!));
 
     [TestMethod]
     public void GetMemberCategoryOrder_UnexpectedMember_Returns99()
@@ -60,7 +60,7 @@ public sealed class MemberOrderUnitTests
     [TestMethod]
     public void GetMemberName_NullMember_ThrowsArgumentNullException() =>
         // Act and assert
-        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberName(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => MemberOrderAnalyzer.GetMemberName(null!));
 
     [TestMethod]
     public void GetMemberName_UnexpectedMember_ThrowsInvalidOperationException()
@@ -69,13 +69,13 @@ public sealed class MemberOrderUnitTests
         MemberDeclarationSyntax unexpectedMemberSyntax = NamespaceDeclaration(IdentifierName("MyNamespace"));
 
         // Act and assert
-        Assert.ThrowsException<InvalidOperationException>(() => MemberOrderAnalyzer.GetMemberName(unexpectedMemberSyntax));
+        Assert.ThrowsExactly<InvalidOperationException>(() => MemberOrderAnalyzer.GetMemberName(unexpectedMemberSyntax));
     }
 
     [TestMethod]
     public void GetSpecialKeywordOrder_NullMember_ThrowsArgumentNullException() =>
         // Act and assert
-        Assert.ThrowsException<ArgumentNullException>(() => MemberOrderAnalyzer.GetSpecialKeywordOrder(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => MemberOrderAnalyzer.GetSpecialKeywordOrder(null!));
 
     [TestMethod]
     public void Initialize_NoErrors()
@@ -102,7 +102,7 @@ public sealed class MemberOrderUnitTests
         MemberOrderAnalyzer analyzer = new();
 
         // Act and assert
-        Assert.ThrowsException<ArgumentNullException>(() => analyzer.Initialize(null!));
+        Assert.ThrowsExactly<ArgumentNullException>(() => analyzer.Initialize(null!));
     }
 
     private sealed class MockAnalysisContext : AnalysisContext
