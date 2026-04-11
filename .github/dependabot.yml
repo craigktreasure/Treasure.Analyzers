@@ -9,19 +9,9 @@ updates:
     timezone: 'America/Los_Angeles'
   open-pull-requests-limit: 10
   groups:
-    coverlet:
+    all-nuget:
       patterns:
-      - "coverlet*"
-    MSTest:
-      patterns:
-      - "MSTest.*"
-    Microsoft.CodeAnalysis:
-      patterns:
-      - "Microsoft.CodeAnalysis*"
-    gitversioning:
-      patterns:
-      - "Nerdbank.GitVersioning"
-      - "nbgv"
+      - "*"
 
 - package-ecosystem: 'dotnet-sdk'
   directory: "/"
@@ -39,3 +29,7 @@ updates:
     time: '17:00'
     timezone: 'America/Los_Angeles'
   open-pull-requests-limit: 10
+  groups:
+    all-actions:
+      patterns:
+      - "*"
