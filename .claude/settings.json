@@ -1,0 +1,11 @@
+﻿{
+  "permissions": {
+    "allow": [
+      "PowerShell(dotnet sdk check *)",
+      "PowerShell(dotnet list package *)",
+      "PowerShell(dotnet build *)",
+      "PowerShell(dotnet test *)",
+      "PowerShell(dotnet restore *)"
+    ]
+  }
+}
