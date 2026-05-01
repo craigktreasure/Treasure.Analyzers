@@ -1,7 +1,0 @@
-<Project>
-
-  <Target Name="Build">
-      <Message Importance="High" Text="$(MSBuildProjectName) has been skipped." />
-  </Target>
-
-</Project>
