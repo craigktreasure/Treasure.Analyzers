@@ -22,7 +22,8 @@
     <ProjectCapability Include="CreateVsixContainer" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- The VSSDK build tools and the VS SDK are Windows-only; condition them so the project still loads cross-platform. -->
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
     <PackageReference Include="Microsoft.VisualStudio.SDK" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" PrivateAssets="all" />
