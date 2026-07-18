@@ -33,6 +33,8 @@
     <PackageVersion Include="Microsoft.VisualStudio.SDK"                        Version="17.14.40265" />
     <PackageVersion Include="Microsoft.VisualStudio.SDK.Analyzers"              Version="17.7.113" />
     <PackageVersion Include="Microsoft.VSSDK.BuildTools"                        Version="18.5.40034" />
+    <!-- Transitively pinned to patch CVE-2026-48109 (High). Pulled in by Microsoft.VisualStudio.SDK at 2.5.192. -->
+    <PackageVersion Include="MessagePack"                                       Version="2.5.302" />
   </ItemGroup>
 
   <ItemGroup Label="Test Only Packages" Condition=" '$(TestOnlyPackagesEnabled)' == 'true' ">
